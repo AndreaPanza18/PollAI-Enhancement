@@ -1,0 +1,144 @@
+body {
+    background: linear-gradient(135deg, rgb(223, 255, 224) 40%, rgb(223, 255, 224) 100%);
+    font-family: 'Merriweather', serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    color: #d1d9e6;
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+main {
+    flex: 1;
+}
+
+.login-form {
+    position: relative;
+    background-color: #354580;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 360px;
+    height: auto;
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Merriweather', serif;
+    margin: 20vh auto;
+
+}
+
+.form-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.input-container {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.input {
+    background-color: #3e4ea8;
+    border: 1px solid #3e4ea8;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 12px 16px;
+    width: 90%;
+    outline: none;
+    transition: border 0.3s ease;
+    position: relative;
+}
+
+.input::placeholder {
+    color: #a4b2cc;
+    font-size: 14px;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.input:focus::placeholder,
+.input:not(:placeholder-shown)::placeholder {
+    transform: translateY(-28px);
+    font-size: 12px;
+    color: #3e4ea8;
+}
+
+/* Stile del tasto di login */
+.button-login {
+    cursor: pointer;
+    position: relative;
+    padding: 14px 24px;
+    font-size: 18px;
+    color: #ffffff;
+    border: 2px solid #088008;
+    border-radius: 12px;
+    background-color: #088008;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.button-login:hover {
+    background-color: #067306;
+}
+
+.button-login:active {
+    background-color: #009c20;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .login-form {
+        width: 60%;
+        padding: 20px;
+        margin: 35vh auto;
+    }
+
+    .form-title {
+        font-size: 28px;
+    }
+
+    .submit {
+        font-size: 16px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .login-form {
+        width: 70%;
+        margin: 25vh auto;
+    }
+
+    .input-container input {
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 2.2em;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+
+    .form-title {
+        font-size: 1.2rem;
+    }
+
+    .button-login {
+        padding: 12px 0;
+        font-size: 18px;
+    }
+}

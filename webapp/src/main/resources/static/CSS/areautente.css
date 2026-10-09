@@ -1,0 +1,37 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+}
+
+.content-container {
+    margin-left: 320px;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.user-info h2 {
+    font-size: 20px;
+}
+
+.user-links, .user-links-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.content-container .user-links a,
+.content-container .user-links-bottom a {
+    text-decoration: none;
+    color: #333;
+    padding: 5px;
+}
+
+.content-container .user-links a:hover,
+.content-container .user-links-bottom a:hover {
+    background-color: #f4f4f4;
+    color: #000;
+}

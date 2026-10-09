@@ -1,0 +1,166 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+}
+
+.content-container {
+    margin-left: 320px;
+    padding: 20px;
+    width: calc(100% - 320px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+}
+
+h2 {
+    font-size: 24px;
+    color: #203752;
+    margin-bottom: 15px;
+}
+
+.uova-display ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.uova-display li {
+    background-color: rgba(1, 154, 222, 0.05);
+    border: 1px solid #019ade;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.uova-display span {
+    font-weight: bold;
+}
+
+.inserimento-uova form {
+    background-color: rgba(1, 154, 222, 0.05);
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #019ade;
+    margin-top: 20px;
+}
+
+.inserimento-uova label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.inserimento-uova input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #019ade;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inserimento-uova input:hover {
+    border-color: #034aff;
+}
+
+.inserimento-uova button {
+    background-color: #019ADE;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.inserimento-uova button:hover {
+    background-color: #017A9D;
+}
+
+.archivio-uovo form, .predizione-uova form {
+    background-color: rgba(1, 154, 222, 0.05);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #019ade;
+    margin-top: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.archivio-uovo select, .predizione-uova select {
+    width: 200px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #019ade;
+    margin-right: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.archivio-uovo input[type="submit"], .predizione-uova input[type="submit"] {
+    background-color: #019ADE;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.archivio-uovo input[type="submit"]:hover, .predizione-uova input[type="submit"]:hover {
+    background-color: #017A9D;
+}
+
+.predizione-uova p, .archivio-uovo p {
+    margin-top: 10px;
+    color: #000000;
+    font-size: 16px;
+}
+
+fieldset {
+    border: 1px solid #019ade;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+form input[type="number"]:hover, form select:hover {
+    border-color: #034aff;
+}
+
+form input[type="number"]:focus, form select:focus {
+    outline: none;
+    border-color: #034aff;
+    box-shadow: 0 0 5px rgb(3, 57, 195);
+}
+
+.predizione-uova input[type="number"] {
+    width: 100%;
+    max-width: 70px;
+    height: 20px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #203752;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.predizione-uova input[type="number"]:hover {
+    border-color: #034aff;
+}
+
+.predizione-uova input[type="number"]:focus {
+    outline: none;
+    border-color: #034aff;
+    box-shadow: 0 0 5px rgb(3, 57, 195);
+}
+
+.inserimento-uova input[type="date"]:hover {
+    border-color: #034aff;
+}
+
+.inserimento-uova input[type="date"]:focus {
+    outline: none;
+    border-color: #034aff;
+    box-shadow: 0 0 5px rgb(3, 57, 195);
+}

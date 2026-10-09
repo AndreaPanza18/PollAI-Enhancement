@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/CSS/nav-bar.css">
+    <link rel="stylesheet" href="/CSS/login.css">
+    <link rel="stylesheet" href="/CSS/footer.css">
+    <script src="/JS/checkLogin.js"></script>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<h2 th:if="${Invalid != null}" class="error-message">Invalid Login. Please try again.</h2>
+
+<div class="login-form">
+    <form action="/login" method="post">
+        <p class="form-title">Sign in to your account</p>
+
+        <div class="input-container">
+            <label for="email"></label><input type="email" name="email" id="email" pattern="^[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,10}$" class="input" placeholder="Email" required autofocus />
+            <div id="emailError" class="error" style="color: red;"></div>
+        </div>
+
+        <div class="input-container">
+            <label for="password"></label><input type="password" name="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':&quot\\|,.<>\/?]).{8,}$" class="input" placeholder="Password" required />
+            <div id="passwordError" class="error" style="color: red;"></div>
+        </div>
+
+        <button class="button-login" type="submit">Log in</button>
+    </form>
+</div>
+
+<footer>
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+</body>
+</html>

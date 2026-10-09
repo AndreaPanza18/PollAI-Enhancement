@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="/CSS/userbar.css">
+  <link rel="stylesheet" href="/CSS/profilo.css">
+</head>
+<body>
+
+<header>
+  <div th:replace="fragments/userbar :: userbar"></div>
+</header>
+
+<div class="content-container">
+  <h1>User Profile</h1>
+  <p>Here you can view your profile information.</p>
+
+  <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.content-container {
+    margin-left: 320px;
+    padding: 20px;
+    width: calc(100% - 320px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    font-size: 24px;
+    color: #203752;
+}
+
+p {
+    font-size: 16px;
+    color: #555;
+}
+
+.nome-utente {
+    color: #203752;
+}
+
+.pollame-display {
+    margin-top: 20px;
+}
+
+.pollame-display ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.pollame-display li {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.pollame-display span {
+    font-weight: bold;
+}
+
+form {
+    margin-top: 20px;
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+form input {
+    padding: 5px;
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input:hover {
+    border-color: #034aff;
+}
+
+form input:focus {
+    outline: none;
+    border-color: #034aff;
+    box-shadow: 0 0 5px rgb(3, 57, 195);
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+h3 {
+    color: #ff0000;
+    font-size: 18px;
+}
+
+select {
+    width: 100%;
+    max-width: 150px;
+    height: 30px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #203752;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+select:hover {
+    border-color: #034aff;
+}
+
+select:focus {
+    outline: none;
+    border-color: #034aff;
+    box-shadow: 0 0 5px rgb(3, 57, 195);
+}
+
+option {
+    color: #203752;
+    background-color: #ffffff;
+}
+
+select::-ms-expand, select::-webkit-inner-spin-button {
+    color: #203752;
+}

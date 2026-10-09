@@ -1,0 +1,138 @@
+main {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f7f9fc, #e3e8f1);
+    height: 100vh;
+    padding: 50px 20px;
+}
+
+h1 {
+    margin-bottom: 40px;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5em;
+    font-family: 'Merriweather', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.plan-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.plan-box {
+    background: #ffffff;
+    border: 1px solid #e3e8f1;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Merriweather', serif;
+}
+
+.plan-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.plan-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #34495e;
+    font-family: 'Merriweather', serif;
+}
+
+.plan-description {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    color: #7f8c8d;
+    line-height: 1.6;
+    font-family: 'Merriweather', serif;
+}
+
+/* Pulsante di sottoscrizione */
+.subscribe-button {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-family: 'Merriweather', serif;
+    transition: all 0.4s ease;
+}
+
+.subscribe-button:hover {
+    background: linear-gradient(135deg, #0056b3, #003a80);
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 30px;
+    }
+
+    .plan-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .plan-box {
+        padding: 20px;
+    }
+
+    .plan-title {
+        font-size: 1.6em;
+    }
+
+    .plan-description {
+        font-size: 1em;
+    }
+
+    .subscribe-button {
+        font-size: 1.1em;
+        padding: 10px 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .plan-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .plan-box {
+        padding: 15px;
+    }
+
+    .plan-title {
+        font-size: 1.4em;
+    }
+
+    .plan-description {
+        font-size: 1em;
+    }
+
+    .subscribe-button {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+}

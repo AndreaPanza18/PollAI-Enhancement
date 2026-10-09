@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set up your chicken coop!</title>
+    <link rel="stylesheet" href="/CSS/userbar.css">
+    <link rel="stylesheet" href="/CSS/configura-pollaio.css">
+    <script>
+        setTimeout(function() {
+            window.location.href = "/accesso-pollaio";
+        }, 5000);  // 5000 millisecondi = 5 secondi
+    </script>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/userbar :: userbar"></div>
+</header>
+<div class="content-container">
+    <p>To access the PollAIO features you must first enter your poultry data</p><br>
+</div>
+</body>
+</html>
