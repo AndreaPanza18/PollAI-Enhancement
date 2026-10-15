@@ -1,0 +1,11 @@
+**/target/
+**/.git/
+**/.idea/
+**/.vscode/
+**/__pycache__/
+**/*.pyc
+**/.ipynb_checkpoints/
+.gitignore
+.dockerignore
+secrets.env
+*.log

@@ -1,6 +1,4 @@
-HELP.md
-modulo-AI/EurekaServer/target/
-webapp/target/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -34,3 +32,4 @@ build/
 .vscode/
 
 *.env
+!.env.example
