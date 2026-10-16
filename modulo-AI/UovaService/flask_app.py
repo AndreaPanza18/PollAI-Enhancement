@@ -14,7 +14,8 @@ rest_port = 8050
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
                    app_name="uova-service",
                    instance_port=rest_port,
-                   instance_ip = hostname)
+                   instance_host="localhost",
+                   instance_ip="127.0.0.1")
 
 app = Flask(__name__)
 model = uova_model()
