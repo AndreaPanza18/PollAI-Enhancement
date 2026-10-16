@@ -1,34 +1,20 @@
 services:
-  db:
-    image: postgres:14.24-alpine3.23
-    env_file:
-      - ./secrets.env
-    environment:
-      POSTGRES_DB: pollai_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   ai-module:
-    build: "/modulo-AI/."
-    depends_on:
-      - db
+    build: 
+      context: .
+      dockerfile: /modulo-AI/Dockerfile
     env_file:
       - ./secrets.env
     ports:
       - "8050:8050"
 
   pollai:
-    build: "/webapp/."
+    build:
+      context: .
+      dockerfile: webapp/Dockerfile
     depends_on:
-      - db
       - ai-module
     env_file:
       - ./secrets.env
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pollai_db
     ports:
       - "8060:8060"
-      
-volumes:
-  postgres_data:
-    driver: local

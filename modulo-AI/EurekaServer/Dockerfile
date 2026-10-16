@@ -13,7 +13,7 @@ FROM eclipse-temurin:21-jre-noble
 
 WORKDIR /result
 
-COPY --from=source /app/target/PollAI-1.0.0.war PollAI-webapp.war
+COPY --from=source /app/target/PollAI-1.0.0.jar PollAI-webapp.jar
 
 EXPOSE 8060
 

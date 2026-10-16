@@ -13,8 +13,8 @@ FROM eclipse-temurin:21-jre-noble
 
 WORKDIR /result
 
-COPY --from=source /app/target/PollAI-1.0.0.jar PollAI-ai.war
+COPY --from=source /app/target/PollAI-1.0.0.war PollAI-ai.war
 
-EXPOSE 8050
+EXPOSE 8060
 
 ENTRYPOINT [ "java", "-jar", "PollAI-ai.war" ]
