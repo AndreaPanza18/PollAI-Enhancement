@@ -7,14 +7,16 @@ import json
 
 from uova_model import uova_model
 
-# Get the correct IP address to register with Eureka
-hostname = socket.gethostbyname(socket.gethostname())
-
+# Indirizzo con cui il servizio si registra su Eureka.
+# Prima veniva usato il nome del PC (es. DESKTOP-XXXX.unisa.it), che fuori dalla
+# rete d'ateneo non e' risolvibile -> UnknownHostException nella webapp.
+# Webapp, Eureka e Flask girano sullo stesso PC, quindi usiamo localhost.
 rest_port = 8050
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
                    app_name="uova-service",
                    instance_port=rest_port,
-                   instance_ip = hostname)
+                   instance_host="localhost",
+                   instance_ip="127.0.0.1")
 
 app = Flask(__name__)
 model = uova_model()
