@@ -1,0 +1,37 @@
+# Maven
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+HELP.md
+
+# IDE
+.idea/
+**/.idea/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Build tools
+.apt_generated/
+build/
+**/build/
+dist/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Credenziali database locali
+/webapp/src/main/resources/db.properties
