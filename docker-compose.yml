@@ -1,0 +1,58 @@
+services:
+  eureka:
+    build:
+      context: ./modulo-AI/EurekaServer
+      dockerfile: Dockerfile
+    environment:
+      AIMODULE_PORT: 8761
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8761'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  uova-service:
+    build:
+      context: ./modulo-AI/UovaService
+      dockerfile: Dockerfile
+    depends_on:
+      eureka:
+        condition: service_healthy
+    environment:
+      EUREKA_SERVER_URL: http://eureka:8761/eureka
+      EUREKA_INSTANCE_HOST: uova-service
+      UOVA_SERVICE_PORT: 8050
+    ports:
+      - "8050:8050"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8050/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    depends_on:
+      eureka:
+        condition: service_healthy
+    env_file:
+      - ./secrets.env
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    ports:
+      - "8060:8080"
+
+  notebook:
+    build:
+      context: ./modulo-AI/Notebook
+      dockerfile: Dockerfile
+    profiles: ["tools"]
+    # Dev environment: si avvia solo con --profile tools.
+    ports:
+      - "8888:8888"
