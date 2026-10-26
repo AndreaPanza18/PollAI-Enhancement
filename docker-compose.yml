@@ -47,12 +47,3 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
     ports:
       - "8060:8080"
-
-  notebook:
-    build:
-      context: ./modulo-AI/Notebook
-      dockerfile: Dockerfile
-    profiles: ["tools"]
-    # Dev environment: si avvia solo con --profile tools.
-    ports:
-      - "8888:8888"
