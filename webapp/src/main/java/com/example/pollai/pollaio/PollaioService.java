@@ -19,19 +19,19 @@ public class PollaioService {
     }
 
 
-    public Pollaio createPollaio(Utente utente){
-        Pollaio pollaio = new Pollaio();
+    public Pollaio createPollaio(final Utente utente){
+        final Pollaio pollaio = new Pollaio();
         pollaio.setUtente(utente);
         pollaio.setQuantity(0);
         utente.setPollaio(pollaio);
         return pollaioDAO.save(pollaio);
     }
 
-    public Optional findPollaioID(long id){
+    public Optional findPollaioID(final long id){
         return pollaioDAO.findById(id);
     }
 
-    public Pollaio addGallina(Pollaio p, Gallina g) {
+    public Pollaio addGallina(final Pollaio p, final Gallina g) {
         if (p.getQuantity() < 15) {
             p.addGallina(g);
             gallinaDAO.save(g);
@@ -43,7 +43,7 @@ public class PollaioService {
     }
 
 
-    public Pollaio removeGallina(Pollaio p, Gallina g) {
+    public Pollaio removeGallina(final Pollaio p, final Gallina g) {
         if (p.getQuantity() > 0) {
             p.removeGallina(g);
             gallinaDAO.delete(g);

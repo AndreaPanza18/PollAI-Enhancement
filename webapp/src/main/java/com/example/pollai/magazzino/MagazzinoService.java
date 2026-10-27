@@ -15,14 +15,14 @@ public class MagazzinoService {
     private CiboDAO ciboDAO;
 
 
-    public Magazzino createMagazzino(Utente utente){
-        Magazzino m = new Magazzino();
+    public Magazzino createMagazzino(final Utente utente){
+        final Magazzino m = new Magazzino();
         m.setUtente(utente);
         utente.setMagazzino(m);
         return magazzinoDAO.save(m);
     }
 
-    public Magazzino addFarmaco(Magazzino m, Farmaco f){
+    public Magazzino addFarmaco(final Magazzino m, final Farmaco f){
 
         // Salva il farmaco per generare l'ID
         m.addFarmaco(f);
@@ -31,8 +31,8 @@ public class MagazzinoService {
         return magazzinoDAO.save(m);
     }
 
-    public Magazzino removeFarmaco(Magazzino m, Long farmacoId){
-        Farmaco f = farmacoDAO.findById(farmacoId).get();
+    public Magazzino removeFarmaco(final Magazzino m, final Long farmacoId){
+        final Farmaco f = farmacoDAO.findById(farmacoId).get();
         try {
             // Rimuove il farmaco dal magazzino
             m.removeFarmaco(f);
@@ -42,13 +42,13 @@ public class MagazzinoService {
 
             // Salva il magazzino aggiornato e lo restituisce
             return magazzinoDAO.save(m);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Gestisce eventuali errori di rimozione o salvataggio
             throw new RuntimeException("Errore durante la rimozione del farmaco", e);
         }
     }
 
-    public Magazzino addCibo(Magazzino m, Cibo c){
+    public Magazzino addCibo(final Magazzino m, final Cibo c){
         // Aggiungi il cibo al magazzino
         m.addCibo(c);
 
@@ -56,8 +56,8 @@ public class MagazzinoService {
         return magazzinoDAO.save(m);
     }
 
-    public Magazzino removeCibo(Magazzino m, Long ciboId) {
-        Cibo c = ciboDAO.findById(ciboId).get();
+    public Magazzino removeCibo(final Magazzino m, final Long ciboId) {
+        final Cibo c = ciboDAO.findById(ciboId).get();
         try {
             // Rimuove il farmaco dal magazzino
             m.removeCibo(c);
@@ -67,19 +67,19 @@ public class MagazzinoService {
 
             // Salva il magazzino aggiornato e lo restituisce
             return magazzinoDAO.save(m);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Gestisce eventuali errori di rimozione o salvataggio
             throw new RuntimeException("Errore durante la rimozione del cibo", e);
         }
     }
 
-    public Magazzino modificaFarmaco(Magazzino m, Long itemId, int cambio) {
+    public Magazzino modificaFarmaco(final Magazzino m, final Long itemId,final int cambio) {
         // Recupera l'oggetto Farmaco dal database utilizzando l'ID dell'item
-        Farmaco f = farmacoDAO.findById(itemId).get();
+        final Farmaco f = farmacoDAO.findById(itemId).get();
 
         try {
             // Calcola la nuova quantità di farmaco dopo l'operazione di aggiunta o rimozione
-            int quantita = f.getQuantita() + cambio;
+            final int quantita = f.getQuantita() + cambio;
 
             // Verifica se la quantità risulta negativa o zero
             if (quantita <= 0) {
@@ -94,20 +94,20 @@ public class MagazzinoService {
 
             // Salva il Magazzino aggiornato nel database e lo restituisce
             return magazzinoDAO.save(m);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Gestisce eventuali errori che potrebbero verificarsi durante la modifica del farmaco
             // (ad esempio problemi con il salvataggio o la rimozione)
             throw new RuntimeException("Errore durante la modifica del farmaco", e);
         }
     }
 
-    public Magazzino modificaCibo(Magazzino m, Long itemId, int cambio) {
+    public Magazzino modificaCibo(final Magazzino m, final Long itemId,final int cambio) {
         // Recupera l'oggetto Cibo dal database utilizzando l'ID dell'item
-        Cibo c = ciboDAO.findById(itemId).get();
+        final Cibo c = ciboDAO.findById(itemId).get();
 
         try {
             // Calcola la nuova quantità di cibo dopo l'operazione di aggiunta o rimozione
-            int quantita = c.getQuantita() + cambio;
+            final int quantita = c.getQuantita() + cambio;
 
             // Verifica se la quantità risulta negativa o zero
             if (quantita <= 0) {
@@ -122,7 +122,7 @@ public class MagazzinoService {
 
             // Salva il Magazzino aggiornato nel database e lo restituisce
             return magazzinoDAO.save(m);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Gestisce eventuali errori che potrebbero verificarsi durante la modifica del cibo
             // (ad esempio problemi con il salvataggio o la rimozione)
             throw new RuntimeException("Errore durante la modifica del cibo", e);

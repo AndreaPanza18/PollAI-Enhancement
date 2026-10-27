@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface ProduzioneDAO extends JpaRepository<DatiProduzione, Long> {
     @Query(value = "SELECT uova FROM uova_per_data WHERE produzione_id = :produzioneId AND data > :date", nativeQuery = true)
-    List<Integer> findUovaAfterDate(@Param("produzioneId") Long produzioneId, @Param("date") LocalDate date);
+    List<Integer> findUovaAfterDate(@Param("produzioneId") final Long produzioneId, @Param("date") final LocalDate date);
 }
