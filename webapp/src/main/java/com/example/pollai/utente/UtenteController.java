@@ -21,24 +21,25 @@ import java.util.Optional;
 public class UtenteController {
 
     private static final Logger log = LoggerFactory.getLogger(UtenteController.class);
+    public static final String CONFIGURA_POLLAIO = "configura-pollaio";
 
     @Autowired
     private UtenteService utenteService;
 
     //Dopo che l'utente ha inserito tutti fa l'autenticazione
     @PostMapping("/login")
-    public String login(String email, String password, HttpSession session, HttpServletRequest request, Model model){
-        Optional<Utente> user = utenteService.autenticazione(email, password);
-        String referer = request.getHeader("Referer");
+    public String login(final String email, final String password, final HttpSession session, final HttpServletRequest request, final Model model){
+        final Optional<Utente> user = utenteService.autenticazione(email, password);
+        final String referer = request.getHeader("Referer");
         if (user.isPresent()) {
             log.info("User is present");
             session.setAttribute("user", user.get());
 
-            Utente utente = user.get();
-            Pollaio pollaio = utente.getPollaio();
+            final Utente utente = user.get();
+            final Pollaio pollaio = utente.getPollaio();
             //Se non ha galline o è nullo reinderizzalo verso configura-pollaio
             if (pollaio == null || pollaio.getQuantity() == 0) {
-                return "configura-pollaio";
+                return CONFIGURA_POLLAIO;
             }
 
             return "/areautente";
@@ -51,25 +52,25 @@ public class UtenteController {
 
     //Prende i dati dell'utente e lo fa registrare
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") Utente user, @RequestParam String password, HttpSession session){
+    public String register(@ModelAttribute("user") final Utente user, @RequestParam final String password, final HttpSession session){
         log.info("here " + user.getNome());
-        Utente savedUser = utenteService.saveUtente(user, password);
+        final Utente savedUser = utenteService.saveUtente(user, password);
         session.setAttribute("user", savedUser);
-        return "configura-pollaio";
+        return CONFIGURA_POLLAIO;
     }
 
     //Gestione area utente
     @GetMapping("/area-utente")
-    public String areaUtente(HttpSession session, Model model) {
-        Utente user = (Utente) session.getAttribute("user");
+    public String areaUtente(final HttpSession session, final Model model) {
+        final Utente user = (Utente) session.getAttribute("user");
         if (user == null) {
             return "login";
         }
 
         // Verifica se il pollaio dell'utente esiste
-        Pollaio pollaio = user.getPollaio();
+        final Pollaio pollaio = user.getPollaio();
         if (pollaio == null || pollaio.getQuantity() == 0) {
-            return "configura-pollaio";
+            return CONFIGURA_POLLAIO;
         }
 
         model.addAttribute("user", user);
@@ -79,20 +80,20 @@ public class UtenteController {
 
     //Restituisce tutti gli utenti
     @GetMapping("/getAll")
-    public String getUsers(Model model){
-        List<Utente> users = utenteService.getAllUtenti();
+    public String getUsers(final Model model){
+        final List<Utente> users = utenteService.getAllUtenti();
         model.addAttribute("users", users);
         return "allusers";
     }
 
     @GetMapping("/profilo")
-    public String profilo(HttpSession session){
+    public String profilo(final HttpSession session){
         return "profilo";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public String logout(final HttpServletRequest request) {
+        final HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }

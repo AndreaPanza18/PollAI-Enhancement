@@ -1,8 +1,17 @@
 package com.example.pollai.produzione;
 
 import com.example.pollai.pollaio.Pollaio;
-import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.Column;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -50,12 +59,12 @@ public class DatiProduzione {
         this.uovaPerGiorno = uovaPerGiorno;
     }
 
-    public void aggiungiUova(LocalDate date, Integer num){
+    public void aggiungiUova(final LocalDate date, final Integer num){
         uovaPerGiorno.put(date, num);
     }
 
-    public Integer cercaPerGiorno(LocalDate date){
-        Integer uova = uovaPerGiorno.get(date);  // Get the value, it may be null
+    public Integer cercaPerGiorno(final LocalDate date){
+        final Integer uova = uovaPerGiorno.get(date);  // Get the value, it may be null
         if (uova == null) {
             return -1;  // Return -1 if the date is not found
         } else {
