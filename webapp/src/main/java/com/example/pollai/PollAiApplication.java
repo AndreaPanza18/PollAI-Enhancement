@@ -16,7 +16,7 @@ public class PollAiApplication {
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(PollAiApplication.class, args);
 	}
 

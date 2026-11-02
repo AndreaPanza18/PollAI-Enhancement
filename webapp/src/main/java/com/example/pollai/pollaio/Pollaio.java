@@ -2,8 +2,17 @@ package com.example.pollai.pollaio;
 
 import com.example.pollai.produzione.DatiProduzione;
 import com.example.pollai.utente.Utente;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +21,8 @@ import java.util.Optional;
 @Entity
 @Table(name = "pollaio")
 public class Pollaio implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +39,7 @@ public class Pollaio implements Serializable {
     public Pollaio() {
     }
 
-    public Pollaio(int quantity, List<Gallina> galline, Utente utente) {
+    public Pollaio(final int quantity, final List<Gallina> galline, Utente utente) {
         this.galline = galline != null ? galline : new ArrayList<>();
         this.quantity = this.galline.size();
         this.utente = utente;
@@ -54,10 +65,10 @@ public class Pollaio implements Serializable {
         return galline;
     }
 
-    public Optional<Gallina> getGallinaByid(long id){
-        for (Gallina g : galline){
+    public Optional<Gallina> getGallinaByid(final long id){
+        for (final Gallina g : galline){
             if (g.getId() == id){
-                Optional<Gallina> gallina = Optional.of(g);
+                final Optional<Gallina> gallina = Optional.of(g);
                 return gallina;
             }
         }
@@ -68,7 +79,7 @@ public class Pollaio implements Serializable {
         this.galline = galline;
     }
 
-    public void addGallina(Gallina gallina) {
+    public void addGallina(final Gallina gallina) {
         if (galline == null) {
             galline = new ArrayList<>();
         }
@@ -83,7 +94,7 @@ public class Pollaio implements Serializable {
 
 
 
-    public void removeGallina(Gallina gallina) {
+    public void removeGallina(final Gallina gallina) {
         if (galline != null && galline.contains(gallina)) {
             galline.remove(gallina);
             gallina.setPollaio(null);

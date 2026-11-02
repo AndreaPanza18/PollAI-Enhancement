@@ -23,17 +23,17 @@ document.addEventListener("DOMContentLoaded", function () {
         clearErrors();
 
         // Recupera i valori dai campi del modulo
-        const eta = parseInt(document.getElementById("eta").value);
-        const peso = parseInt(document.getElementById("peso").value);
+        const eta = Number.parseInt(document.getElementById("eta").value);
+        const peso = Number.parseInt(document.getElementById("peso").value);
 
         // Validazione dell'età
-        if (isNaN(eta) || eta > 72 || eta < 1) {
+        if (Number.isNaN(eta) || eta > 72 || eta < 1) {
             displayError("etaError", "Age must be between 1 and 72 months.");
             isValid = false;
         }
 
         // Validazione del peso
-        if (isNaN(peso) || peso < 0 || peso > 5000) {
+        if (Number.isNaN(peso) || peso < 0 || peso > 5000) {
             displayError("pesoError", "Weight must be between 0 and 5000 grams.");
             isValid = false;
         }

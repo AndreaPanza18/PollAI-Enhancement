@@ -24,11 +24,15 @@ import org.springframework.http.MediaType;
 
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Controller
 public class ProduzioneController {
 
+    public static final String LOGIN = "login";
+    public static final String REFERER = "Referer";
+    public static final String REDIRECT = "redirect:";
     @Autowired
     private ProduzioneService produzioneService;
     @Autowired
@@ -40,12 +44,12 @@ public class ProduzioneController {
 
 
     @GetMapping("/accesso-produzione")
-    public String produzione(HttpSession session){
+    public String produzione(final HttpSession session){
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
 
-        Pollaio pollaio = utente.getPollaio();
+        final Pollaio pollaio = utente.getPollaio();
         DatiProduzione produzione;
 
         //Se non ha galline o è nullo reinderizzalo verso configura-pollaio
@@ -66,35 +70,35 @@ public class ProduzioneController {
     }
 
     @PostMapping("/inserisci-uova")
-    public String inserisciUova(String date, int quantita, HttpServletRequest request, HttpSession session){
-        LocalDate data = LocalDate.parse(date);
-        String referer = request.getHeader("Referer");
+    public String inserisciUova(final String date, final int quantita, final HttpServletRequest request, final HttpSession session){
+        final LocalDate data = LocalDate.parse(date);
+        final String referer = request.getHeader(REFERER);
 
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
 
-        Pollaio pollaio = utente.getPollaio();
+        final Pollaio pollaio = utente.getPollaio();
 
-        DatiProduzione produzione = produzioneService.aggiornaUovaGiorno(quantita, pollaio.getProduzione(), data);
+        final DatiProduzione produzione = produzioneService.aggiornaUovaGiorno(quantita, pollaio.getProduzione(), data);
         pollaio.setProduzione(produzione);
         utente.setPollaio(pollaio);
         session.setAttribute("user", utente);
         // Reindirizza alla pagina precedente o alla home
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
     @GetMapping("/archivio-produzione")
-    public String archivioProduzione(@RequestParam String category, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes){
-        LocalDate data = LocalDate.now();
-        String referer = request.getHeader("Referer");
+    public String archivioProduzione(@RequestParam final String category, final HttpSession session, final HttpServletRequest request, final RedirectAttributes redirectAttributes){
+        LocalDate data = LocalDate.now(ZoneOffset.UTC);
+        final String referer = request.getHeader(REFERER);
 
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
 
-        Pollaio pollaio = utente.getPollaio();
-        DatiProduzione produzione = pollaio.getProduzione();
+        final Pollaio pollaio = utente.getPollaio();
+        final DatiProduzione produzione = pollaio.getProduzione();
         
         switch (category) {
 
@@ -115,7 +119,7 @@ public class ProduzioneController {
 
         redirectAttributes.addFlashAttribute("archivio", archivio);
 
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
     /**@GetMapping("/predizione-produzione")
@@ -147,31 +151,31 @@ public class ProduzioneController {
     }*/
 
     @GetMapping("/predizione-produzione")
-    public String predizioneProduzione(@RequestParam String category,
-                                       @RequestParam String feed,
-                                       @RequestParam int temperature,
-                                       HttpSession session, HttpServletRequest request,
-                                       RedirectAttributes redirectAttributes) throws JsonProcessingException {
+    public String predizioneProduzione(@RequestParam final String category,
+                                       @RequestParam final String feed,
+                                       @RequestParam final int temperature,
+                                       final HttpSession session, final HttpServletRequest request,
+                                       final RedirectAttributes redirectAttributes) throws JsonProcessingException {
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
 
-        Pollaio pollaio = utente.getPollaio();
-        String referer = request.getHeader("Referer");
+        final Pollaio pollaio = utente.getPollaio();
+        final String referer = request.getHeader(REFERER);
         //WebClient client = WebClient.create("http://192.168.1.13:8050/predizione");
         //converte le galline in json per mandarle al servizio di predizione
-        ObjectMapper objectMapper = new ObjectMapper();
-        HttpHeaders headers = new HttpHeaders();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        List<Gallina> galline = pollaio.getGalline();
+        final List<Gallina> galline = pollaio.getGalline();
 
-        for(Gallina g : galline){
+        for(final Gallina g : galline){
             g.setMangime(feed);
             g.setTemperatura(temperature);
         }
 
-        HttpEntity<List<Gallina>> requestJson = new HttpEntity<>(galline, headers);
-        String response = restTemplate.postForObject("http://uova-service:8050/predizione", requestJson, String.class);
+        final HttpEntity<List<Gallina>> requestJson = new HttpEntity<>(galline, headers);
+        final String response = restTemplate.postForObject("http://uova-service:8050/predizione", requestJson, String.class);
 
 
         /**String response = client.post()
@@ -179,7 +183,7 @@ public class ProduzioneController {
                 .bodyToMono(String.class)
                 .block();  */
 
-        Prediction eggs = objectMapper.readValue(response, Prediction.class);
+        final Prediction eggs = objectMapper.readValue(response, Prediction.class);
 
         switch (category){
             case "3 months": eggs.setPrediction(eggs.getPrediction() * 3); break;
@@ -187,21 +191,21 @@ public class ProduzioneController {
             case "1 year": eggs.setPrediction(eggs.getPrediction() * 12); break;
         }
 
-        String predizione = "The eggs that will be produces in the next " + category + " are " + eggs.getPrediction();
+        final String predizione = "The eggs that will be produces in the next " + category + " are " + eggs.getPrediction();
 
         redirectAttributes.addFlashAttribute("predizione", predizione);
 
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
 
-    private Utente getUtente(HttpSession session){
+    final private Utente getUtente(final HttpSession session){
         //prende l'Utente dalla sessione e verifica se esiste nel database
-        Utente sessionUser = (Utente) session.getAttribute("user");
+        final Utente sessionUser = (Utente) session.getAttribute("user");
         if (sessionUser == null) {
             return null;
         }
-        Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
+        final Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
 
         return utente;
     }

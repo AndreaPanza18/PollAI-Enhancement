@@ -20,9 +20,9 @@ public class UtenteService {
     private static final Logger log = LoggerFactory.getLogger(UtenteController.class);
 
     // Crea o aggiorna un Utente (salva)
-    public Utente saveUtente(Utente utente, String password) {
+    public Utente saveUtente(final Utente utente, final String password) {
         // Hash della password prima di salvarla
-        String hashedPassword = hashPassword(password);
+        final String hashedPassword = hashPassword(password);
         // Imposta la password criptata sull'utente
         utente.setPassword(hashedPassword);
         // Salva l'utente nel repository e restituisce l'utente salvato
@@ -36,24 +36,24 @@ public class UtenteService {
     }
 
     // Ottiene un Utente per ID
-    public Optional<Utente> getUtenteById(Long id) {
+    public Optional<Utente> getUtenteById(final Long id) {
         // Restituisce un utente opzionale trovato tramite ID
         return utenteDAO.findById(id);
     }
 
     // Elimina un Utente per ID
-    public void deleteUtente(Long id) {
+    public void deleteUtente(final Long id) {
         // Elimina l'utente con il dato ID
         utenteDAO.deleteById(id);
     }
 
     // Esempio di query personalizzata: Ottieni un Utente tramite email
-    public Optional<Utente> autenticazione(String email, String password) {
+    public Optional<Utente> autenticazione(final String email, final String password) {
         // Cerca un utente tramite email
-        Optional<Utente> userCheck = utenteDAO.findByEmail(email);
+        final Optional<Utente> userCheck = utenteDAO.findByEmail(email);
         if(userCheck.isPresent()){
             log.info("L'email è stata trovata");
-            Utente user = userCheck.get();
+            final Utente user = userCheck.get();
             // Verifica se la password corrisponde
             if(!verifyPassword(password, user.getPassword())){
                 // Se la password non è corretta, restituisce un risultato vuoto
@@ -65,13 +65,13 @@ public class UtenteService {
     }
 
     // Metodo per fare l'hash della password
-    public static String hashPassword(String plainPassword) {
+    public static String hashPassword(final String plainPassword) {
         // Restituisce la password criptata usando BCrypt
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
     }
 
     // Metodo per verificare se la password inserita corrisponde alla password criptata
-    public static boolean verifyPassword(String plainPassword, String hashedPassword) {
+    public static boolean verifyPassword(final String plainPassword, final String hashedPassword) {
         // Confronta la password in chiaro con quella criptata
         return BCrypt.checkpw(plainPassword, hashedPassword);
     }
