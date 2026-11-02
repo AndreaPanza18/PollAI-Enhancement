@@ -1,0 +1,6 @@
+Flask
+joblib
+numpy
+pandas
+py-eureka-client
+scikit-learn

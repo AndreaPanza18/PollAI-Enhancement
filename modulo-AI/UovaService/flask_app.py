@@ -1,25 +1,30 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 import py_eureka_client.eureka_client as eureka_client
+import os
 import socket
-import sklearn
-import json
 
 from uova_model import uova_model
 
 # Indirizzo con cui il servizio si registra su Eureka.
 # Prima veniva usato il nome del PC (es. DESKTOP-XXXX.unisa.it), che fuori dalla
 # rete d'ateneo non e' risolvibile -> UnknownHostException nella webapp.
-# Webapp, Eureka e Flask girano sullo stesso PC, quindi usiamo localhost.
-rest_port = 8050
-eureka_client.init(eureka_server="http://localhost:8761/eureka",
+# In Docker il nome host viene impostato da Compose; in locale resta localhost.
+rest_port = int(os.getenv("UOVA_SERVICE_PORT", "8050"))
+instance_host = os.getenv("EUREKA_INSTANCE_HOST", "localhost")
+eureka_server = os.getenv("EUREKA_SERVER_URL", "http://localhost:8761/eureka")
+eureka_client.init(eureka_server=eureka_server,
                    app_name="uova-service",
                    instance_port=rest_port,
-                   instance_host="localhost",
-                   instance_ip="127.0.0.1")
+                   instance_host=instance_host,
+                   instance_ip=socket.gethostbyname(instance_host))
 
 app = Flask(__name__)
 model = uova_model()
+
+@app.route("/health", methods=["GET"])
+def health():
+    return {"status": "ok"}
 
 @app.route("/predizione", methods=['POST'])
 def hello():

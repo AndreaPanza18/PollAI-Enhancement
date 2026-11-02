@@ -33,5 +33,6 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Credenziali database locali
+# Credenziali locali
+secrets.env
 /webapp/src/main/resources/db.properties
