@@ -9,3 +9,6 @@ Repository del progetto ISTA/Dependability/Sustainability.
 **Notebook:** Creazione in un Notebook del modello di regressione per la predizione della produzione di uova
 
 **Uova Service:** esportazione del modello in un flask API che si collega con la web-app principale per ricevere i dati sulle galline e mandare la predizione.
+
+# Dependability Labs
+[1. CI/CD Action](CICD.md)
