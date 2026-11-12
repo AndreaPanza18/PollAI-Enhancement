@@ -22,12 +22,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B clean verify --file webapp/pom.xml
+      run: mvn -B -ntp clean verify
 
     # Bellissimo badge per il ReadMe, mostra un grafo di copertura
     - name: Upload coverage to Codecov
       if: success()
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
-        file: ./target/site/jacoco/jacoco.xml
+        file: ./webapp/target/site/jacoco/jacoco.xml
         fail_ci_if_error: false
