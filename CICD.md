@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement/branch/dependability/graph/badge.svg)](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement)
+
 # Pipelines
 
 We set up a Github Action for automatic build and exectution of the project.
