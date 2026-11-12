@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B clean verify --file pom.xml
+      run: mvn -B clean verify --file webapp/pom.xml
 
     # Bellissimo badge per il ReadMe, mostra un grafo di copertura
     - name: Upload coverage to Codecov
