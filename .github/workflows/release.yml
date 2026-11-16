@@ -50,4 +50,5 @@ jobs:
         files: |
             webapp/target/*.war
             modulo-AI/EurekaServer/target/*.jar
-        token: ${{ secrets.POLLAI_RELEASE }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
