@@ -1,0 +1,53 @@
+name: Automatic Releases
+
+on:
+  push:
+    branches: [ "dependability" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v7
+    
+    # Controllo che il messaggio di commit inizi con il pattern "Update v.X.Y.Z" o "Release v.X.Y.Z"
+    - name: Check commit message and extract version
+      id: check
+      run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B | head -n 1)
+          if [[ $COMMIT_MSG =~ ^(Update|Release)\ v\.([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=${BASH_REMATCH[2]}" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+    
+    - name: Set up JDK 21
+      if: steps.check.outputs.should_release == 'true'
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+
+    # Build del package solo se la regex è corretta
+    - name: Build with Maven
+      if: steps.check.outputs.should_release == 'true'
+      run: mvn -B -DskipTests package
+
+    # Creazione della release con tag e nome recuperati dal messaggio di commit
+    - name: Create Release
+      if: steps.check.outputs.should_release == 'true'
+      uses: softprops/action-gh-release@v3
+      with:
+        tag_name: v${{ steps.check.outputs.version }}
+        name: Release v${{ steps.check.outputs.version }}
+        files: |
+            webapp/target/*.war
+            modulo-AI/EurekaServer/target/*.jar
+        token: ${{ secrets.POLLAI_RELEASE }}
