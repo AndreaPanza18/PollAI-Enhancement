@@ -1,6 +1,6 @@
 [![codecov](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement/branch/dependability/graph/badge.svg)](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement)
 
-# CI/CD
+# Lab 1: CI/CD
 
 We defined two CI/CD pipelines for the project:
 1. A workflow for automatic test execution and coverage validation.
@@ -9,7 +9,7 @@ We defined two CI/CD pipelines for the project:
 
 ## Pipeline 1: Test execution
 
-The [`ci.yml`](.github/workflows/ci.yml) workflow is called upon any `push` and `pull request` action on the `dependability` branch.
+The [`ci.yml`](../.github/workflows/ci.yml) workflow is called upon any `push` and `pull request` action on the `dependability` branch.
 
 It is composed of the following steps:
 - checkout of the repository;
@@ -21,7 +21,7 @@ A fail in the pipeline stops all following steps, but a fail in Codecov loading 
 
 ## Pipeline 2: Automatic release
 
-The [`release.yml`](.github/workflows/release.yml) workflow is called upon any `push` action on the `dependability` branch.
+The [`release.yml`](../.github/workflows/release.yml) workflow is called upon any `push` action on the `dependability` branch.
 
 It is composed of the following steps:
 - checkout of the repository;

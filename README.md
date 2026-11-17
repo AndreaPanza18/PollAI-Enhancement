@@ -5,4 +5,4 @@
 Mark Down da rifare completamente
 
 # Dependability Labs
-[1. CI/CD Action](CICD.md)
+[1. CI/CD Action](dependability-lab/Lab1)
