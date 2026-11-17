@@ -1,73 +1,78 @@
 name: Docker Build
 
-on: 
+on:
   workflow_run:
     workflows: ["CI/CD Pipeline"]
-    types: 
+    types:
       - completed
     branches: [ "dependability" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-docker:
     runs-on: ubuntu-latest
-    name: Build Docker Image
-    if: github.event.workflow_run.conclusion == 'success'
+    name: Build and Push Docker Images
+
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v7
-    
-    # Controllo che il messaggio di commit inizi con il pattern "Update v.X.Y.Z" o "Release v.X.Y.Z"
-    - name: Check commit message and extract version
-      id: check
-      run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B | head -n 1)
-          if [[ $COMMIT_MSG =~ ^(Update|Release)\ v\.([0-9]+\.[0-9]+\.[0-9]+) ]]; then
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "version=${BASH_REMATCH[2]}" >> $GITHUB_OUTPUT
-          else
-            echo "should_release=false" >> $GITHUB_OUTPUT
-          fi
-    
-    - name: Set up JDK 21
-      if: steps.check.outputs.should_release == 'true'
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
-    # Build del package solo se la regex è corretta
-    - name: Build with Maven
-      if: steps.check.outputs.should_release == 'true'
-      run: mvn -B -DskipTests package
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-    - name: Set up Docker Build
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Log in Docker Hub
-      uses: docker/login-acction@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ secrets.DOCKER_USERNAME }}/your-repo-name
-        tags: |
-          type=raw,value=latest
-          type=raw,value=version-tag
+      # 1. WEBAPP
+      - name: Build and push WebApp
+        uses: docker/build-push-action@v6
+        with:
+          context: ./webapp
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/pollai-webapp:latest
+            ${{ secrets.DOCKER_USERNAME }}/pollai-webapp:sha-${{ github.sha }}
+          cache-from: type=gha,scope=webapp
+          cache-to: type=gha,scope=webapp,mode=max
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        platforms: linux/amd64, linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-form: type=gha
-        cache-to: type=gha,mode=max
+      # 2. EUREKA SERVER
+      - name: Build and push Eureka
+        uses: docker/build-push-action@v6
+        with:
+          context: ./modulo-AI/EurekaServer
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/pollai-eureka:latest
+            ${{ secrets.DOCKER_USERNAME }}/pollai-eureka:sha-${{ github.sha }}
+          cache-from: type=gha,scope=eureka
+          cache-to: type=gha,scope=eureka,mode=max
+
+      # 3. UOVA SERVICE
+      - name: Build and push Uova Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./modulo-AI/UovaService
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/pollai-uova-service:latest
+            ${{ secrets.DOCKER_USERNAME }}/pollai-uova-service:sha-${{ github.sha }}
+          cache-from: type=gha,scope=uova-service
+          cache-to: type=gha,scope=uova-service,mode=max
