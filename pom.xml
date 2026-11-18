@@ -12,7 +12,7 @@
     <description>PollAI multi-module application</description>
 
     <modules>
-        <module>webapp</module>
-        <module>modulo-AI/EurekaServer</module>
+        <module>backend</module>
+        <module>moduloAI/EurekaServer</module>
     </modules>
 </project>
