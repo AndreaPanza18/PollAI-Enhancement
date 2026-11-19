@@ -3,6 +3,11 @@
 !.mvn/wrapper/maven-wrapper.jar
 HELP.md
 
+#Flutter
+**/generated_plugin_registrant.*
+**/generated_plugins.cmake
+**/GeneratedPluginRegistrant.swift
+
 # IDE
 .idea/
 **/.idea/
