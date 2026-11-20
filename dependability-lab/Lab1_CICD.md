@@ -5,7 +5,7 @@
 We defined the following pipelines for the project:
 1. A workflow for automatic test execution and coverage validation.
 2. A workflow for automatic version release via commit message analysis.
-3. A workflow for automatic build of Docker images and upload on Docker Desktop.
+3. A workflow for automatic build and publication of Docker images on Docker Hub.
 
 
 ## Pipeline 1: Test execution
@@ -40,4 +40,13 @@ If the check was successful:
 
 ## Pipeline 3: Docker build
 
-The [`docker-build.yml`](../.github/workflows/docker-build.yml) workflow is called upon any successful completion of the [`ci.yml`](../.github/workflows/ci.yml) workflow.
+The [`docker-build.yml`](../.github/workflows/docker-build.yml) workflow is called upon completion of the [`ci.yml`](../.github/workflows/ci.yml) workflow on the `dependability` branch. It can also be started manually.
+
+It is composed of the following steps:
+- checkout of the commit that triggered the workflow (or the current commit when manually started);
+- configures QEMU and Docker Buildx to build images for `linux/amd64` and `linux/arm64`;
+- logs in to Docker Hub using the `DOCKER_USERNAME` and `DOCKER_PASSWORD` repository secrets;
+- builds and pushes the `webapp`, `EurekaServer`, and `UovaService` images, each with a `latest` tag and a `sha-<github.sha>` tag;
+- caches the build layers for each image using GitHub Actions cache.
+
+If CI fails, the Docker build job is skipped. The images are published to Docker Hub under the account configured by `DOCKER_USERNAME`.
