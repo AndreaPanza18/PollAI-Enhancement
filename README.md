@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement/branch/dependability/graph/badge.svg)](https://codecov.io/gh/AndreaPanza18/PollAI-Enhancement)
+
 # PollAI-Enhancement
 
 ## Questa repository contiene l'implementazione del progetto di FIA (fondamenti di intelligenza artificiale) ed è diviso in tre parti:

@@ -1,11 +1,12 @@
 name: Docker Build
 
 on:
-  workflow_run:
-    workflows: ["CI Pipeline"]
-    types:
-      - completed
-    branches: [ "dependability" ]
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
   workflow_dispatch:
 
 permissions:
@@ -15,16 +16,11 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     name: Build and Push Docker Images
-
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+    if: github.ref == 'refs/heads/dependability'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
