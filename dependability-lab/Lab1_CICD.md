@@ -2,9 +2,10 @@
 
 # Lab 1: CI/CD
 
-We defined two CI/CD pipelines for the project:
+We defined the following pipelines for the project:
 1. A workflow for automatic test execution and coverage validation.
 2. A workflow for automatic version release via commit message analysis.
+3. A workflow for automatic build of Docker images and upload on Docker Desktop.
 
 
 ## Pipeline 1: Test execution
@@ -36,3 +37,7 @@ If the check was successful:
 - configures JDK 21 Temurin (the same JDK version used in the project);
 - builds the packages via the command: `mvn -B -DskipTests package` (the flags are used for speed and automation);
 - publishes a new release on Github composed of both `webapp` and `EurekaServer` modules, with the tag: `vX.Y.Z`.
+
+## Pipeline 3: Docker build
+
+The [`docker-build.yml`](../.github/workflows/docker-build.yml) workflow is called upon any successful completion of the [`ci.yml`](../.github/workflows/ci.yml) workflow.
