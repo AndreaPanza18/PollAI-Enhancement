@@ -1,4 +1,21 @@
 services:
+
+  # Container per il db commentato, non necessario per il progetto, richiesto dal Lab2.
+  # db:
+  #   image: postgres:17-alpine
+  #   restart: unless-stopped
+  #   env_file:
+  #     - ./secrets.env
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pollai-db-data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
   eureka:
     build:
       context: ./modulo-AI/EurekaServer
@@ -47,3 +64,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
     ports:
       - "8060:8080"
+
+# Volume per la persistenza dei dati del db.
+# volumes:
+#   pollai-db-data:
