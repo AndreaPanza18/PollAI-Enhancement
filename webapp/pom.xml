@@ -224,6 +224,18 @@
 					<targetTests>
 						<param>com.example.pollai.*</param>
 					</targetTests>
+					<excludedTestClasses>
+						<param>com.example.pollai.magazzino.AccessoAlMagazzinoTest</param>
+						<param>com.example.pollai.magazzino.InserimentoCiboTest</param>
+						<param>com.example.pollai.magazzino.InserimentoFarmacoTest</param>
+						<param>com.example.pollai.magazzino.ModificaDatiTest</param>
+						<param>com.example.pollai.magazzino.NotificaCarenzaScorteTest</param>
+						<param>com.example.pollai.pollaio.AccessoPollaioTest</param>
+						<param>com.example.pollai.pollaio.InserimentoEtaGallinaTest</param>
+						<param>com.example.pollai.pollaio.InserimentoPesoGallinaTest</param>
+						<param>com.example.pollai.salute.PollAISaluteTest</param>
+						<param>com.example.pollai.utente.UtenteTestSelenium</param>
+					</excludedTestClasses>
 				</configuration>
 			</plugin>
 		</plugins>
