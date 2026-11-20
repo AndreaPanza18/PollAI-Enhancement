@@ -194,6 +194,11 @@
 											<value>COVEREDRATIO</value>
 											<minimum>0.7</minimum>
 										</limit>
+										<limit>
+                                			<counter>CLASS</counter>
+                                			<value>COVEREDRATIO</value>
+                                			<minimum>1.0</minimum>
+                            			</limit>
 									</limits>
 								</rule>
 							</rules>
