@@ -20,6 +20,9 @@ import java.util.Optional;
 @Controller
 public class MagazzinoController {
 
+    public static final String LOGIN_VIEW = "login";
+    public static final String REFERER = "Referer";
+    public static final String REDIRECT = "redirect:";
     @Autowired
     private MagazzinoService magazzinoService;
     @Autowired
@@ -28,10 +31,11 @@ public class MagazzinoController {
     private static final Logger log = LoggerFactory.getLogger(UtenteController.class);
 
 
+
     @GetMapping("/accesso-magazzino")
-    public String Magazzino(HttpSession session, Model model){
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+    public String Magazzino(final HttpSession session, final Model model){
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN_VIEW;
 
         Magazzino magazzino;
         if(utente.getMagazzino() == null){
@@ -50,53 +54,53 @@ public class MagazzinoController {
     }
 
     @PostMapping("/inserisci-farmaco")
-    public String inserisciFarmaco(HttpSession session,String tipo_f, int quantita_f, HttpServletRequest request){
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+    public String inserisciFarmaco(final HttpSession session,final String tipo_f,final int quantita_f, final HttpServletRequest request){
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN_VIEW;
         // Ottieni il riferimento della pagina precedente
-        String referer = request.getHeader("Referer");
+        final String referer = request.getHeader(REFERER);
         if(quantita_f > 0) {
             // Crea e aggiungi il farmaco al magazzino
-            Farmaco farmaco = new Farmaco(tipo_f, quantita_f, utente.getMagazzino());
-            Magazzino magazzinoAggiornato = magazzinoService.addFarmaco(utente.getMagazzino(), farmaco);
+            final Farmaco farmaco = new Farmaco(tipo_f, quantita_f, utente.getMagazzino());
+            final Magazzino magazzinoAggiornato = magazzinoService.addFarmaco(utente.getMagazzino(), farmaco);
             // Aggiorna l'utente con il magazzino aggiornato
             utente.setMagazzino(magazzinoAggiornato);
             session.setAttribute("user", utente);
         }
         // Reindirizza alla pagina precedente o alla home
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
     @PostMapping("/inserisci-cibo")
-    public String inserisciCibo(HttpSession session,String tipo_c, int quantita_c, HttpServletRequest request){
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+    public String inserisciCibo(final HttpSession session,final String tipo_c, final int quantita_c, final HttpServletRequest request){
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN_VIEW;
         // Ottieni il riferimento della pagina precedente
-        String referer = request.getHeader("Referer");
+        final String referer = request.getHeader(REFERER);
         // Crea e aggiungi il cibo al magazzino
         if(quantita_c > 0) {
-            Cibo cibo = new Cibo(tipo_c, quantita_c, utente.getMagazzino());
-            Magazzino magazzinoAggiornato = magazzinoService.addCibo(utente.getMagazzino(), cibo);
+            final Cibo cibo = new Cibo(tipo_c, quantita_c, utente.getMagazzino());
+            final Magazzino magazzinoAggiornato = magazzinoService.addCibo(utente.getMagazzino(), cibo);
             // Aggiorna l'utente con il magazzino aggiornato
             utente.setMagazzino(magazzinoAggiornato);
             session.setAttribute("user", utente);
         }
         // Reindirizza alla pagina precedente o alla home
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
     @PostMapping({"/rimuovi-farmaco", "/rimuovi-cibo"})
-    public String rimuoviElemento(HttpSession session,
-                                  @RequestParam("id") Long itemId,
-                                  @RequestParam("tipo") String itemType,
-                                  HttpServletRequest request) {
+    public String rimuoviElemento(final HttpSession session,
+                                  @RequestParam("id") final Long itemId,
+                                  @RequestParam("tipo") final String itemType,
+                                  final HttpServletRequest request) {
 
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN_VIEW;
 
         // Ottieni il riferimento della pagina precedente
-        String referer = request.getHeader("Referer");
+        final String referer = request.getHeader(REFERER);
 
         // Log per tipo di elemento
         log.info(itemType + " with id " + itemId);
@@ -114,21 +118,21 @@ public class MagazzinoController {
         session.setAttribute("user", utente);
 
         // Reindirizza alla pagina precedente o alla home
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
     @PostMapping({"/modifica-farmaco", "/modifica-cibo"})
     public String modificaElemento(@RequestParam("cambio") int cambio,
-                                   @RequestParam("azione") String azione,
-                                   @RequestParam("id") Long itemId,
-                                   @RequestParam("tipo") String itemType,
-                                   HttpSession session, HttpServletRequest request){
+                                   @RequestParam("azione") final String azione,
+                                   @RequestParam("id") final Long itemId,
+                                   @RequestParam("tipo") final String itemType,
+                                   final HttpSession session, final HttpServletRequest request){
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN_VIEW;
 
         // Ottieni il riferimento della pagina precedente
-        String referer = request.getHeader("Referer");
+        final String referer = request.getHeader(REFERER);
 
         //aggiungere o rimuovere cambio in base all'input
         cambio = Math.abs(cambio) * (azione.equals("aggiungi") ? 1 : -1);
@@ -146,18 +150,18 @@ public class MagazzinoController {
         session.setAttribute("user", utente);
 
         // Reindirizza alla pagina precedente o alla home
-        return "redirect:" + (referer != null ? referer : "/");
+        return REDIRECT + (referer != null ? referer : "/");
     }
 
-    private Utente getUtente(HttpSession session){
-        Utente utente = (Utente) session.getAttribute("user");
+    private Utente getUtente(final HttpSession session){
+        final Utente utente = (Utente) session.getAttribute("user");
 
         if (utente == null) {
             log.warn("Nessun utente trovato in sessione.");
             return null;
         }
 
-        Optional<Utente> optionalUtente = utenteService.getUtenteById(utente.getId());
+        final Optional<Utente> optionalUtente = utenteService.getUtenteById(utente.getId());
 
         if (optionalUtente.isPresent()) {
             return optionalUtente.get();

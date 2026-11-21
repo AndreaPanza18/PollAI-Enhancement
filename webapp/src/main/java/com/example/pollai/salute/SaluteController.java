@@ -23,17 +23,18 @@ import java.util.Optional;
 @Controller
 public class SaluteController {
 
+    public static final String MESSAGE = "message";
     @Autowired
     private UtenteService utenteService;
 
     @GetMapping("/accesso-salute")
-    public String salute(HttpSession session){
+    public String salute(final HttpSession session){
         //Recupero dell'Utente dalla sessione
-        Utente utente = getUtente(session);
+        final Utente utente = getUtente(session);
         if(utente == null)
             return "login";
 
-        Pollaio pollaio = utente.getPollaio();
+        final Pollaio pollaio = utente.getPollaio();
 
         //Se non ha galline o è nullo reinderizzalo verso configura-pollaio
         if(pollaio == null || pollaio.getQuantity() == 0 ){
@@ -43,47 +44,47 @@ public class SaluteController {
         utente.setPollaio(pollaio);
         session.setAttribute("user", utente);
 
-        List<Gallina> galline = pollaio.getGalline();
+        final List<Gallina> galline = pollaio.getGalline();
         session.setAttribute("galline", galline);
 
         return "gestione-salute";
     }
 
     @PostMapping("/consiglio/{idGallina}")
-    public ResponseEntity<Map<String, String>> richiediConsiglio(@PathVariable String idGallina, HttpSession session) {
+    public ResponseEntity<Map<String, String>> richiediConsiglio(@PathVariable final String idGallina, final HttpSession session) {
         System.out.println("Richiesto consiglio per la gallina con ID: " + idGallina);
-        int id = Integer.valueOf(idGallina);
+        final int id = Integer.valueOf(idGallina);
 
-        Utente utente = (Utente) session.getAttribute("user");
-        Pollaio pollaio = utente.getPollaio();
+        final Utente utente = (Utente) session.getAttribute("user");
+        final Pollaio pollaio = utente.getPollaio();
 
-        Optional<Gallina> checkGallina = pollaio.getGallinaByid(id);
+        final Optional<Gallina> checkGallina = pollaio.getGallinaByid(id);
 
         if (checkGallina.isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Hen with ID " + idGallina + " not found.");
+            final Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put(MESSAGE, "Hen with ID " + idGallina + " not found.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
 
-        Gallina gallina = checkGallina.get();
-        Map<String, String> response = new HashMap<>();
+        final Gallina gallina = checkGallina.get();
+        final Map<String, String> response = new HashMap<>();
         if (gallina.getPeso() < 1500 || gallina.getPeso() > 2500) {
-            response.put("message", "The hen is not in good health.");
+            response.put(MESSAGE, "The hen is not in good health.");
         } else {
-            response.put("message", "The hen is in good health.");
+            response.put(MESSAGE, "The hen is in good health.");
         }
 
         return ResponseEntity.ok(response);
     }
 
 
-    private Utente getUtente(HttpSession session){
+    private Utente getUtente(final HttpSession session){
         //Recupera l'Utente dalla sessione e verifica se esiste nel database
-        Utente sessionUser = (Utente) session.getAttribute("user");
+        final Utente sessionUser = (Utente) session.getAttribute("user");
         if (sessionUser == null) {
             return null;
         }
-        Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
+        final Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
 
         return utente;
     }

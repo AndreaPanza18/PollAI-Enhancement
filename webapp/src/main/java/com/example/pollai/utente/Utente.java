@@ -2,13 +2,25 @@ package com.example.pollai.utente;
 
 import com.example.pollai.magazzino.Magazzino;
 import com.example.pollai.pollaio.Pollaio;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
+
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "privato")
 public class Utente implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

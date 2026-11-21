@@ -24,6 +24,7 @@ import java.util.Optional;
 public class PollaioController {
 
     private static final Logger log = LoggerFactory.getLogger(UtenteController.class);
+    public static final String LOGIN = "login";
 
     @Autowired
     private PollaioService pollaioService;
@@ -31,10 +32,10 @@ public class PollaioController {
     private UtenteService utenteService;
 
     @GetMapping("/accesso-pollaio")
-    public String Pollaio(HttpSession session){
+    public String Pollaio(final HttpSession session){
         // Recupera l'utente dalla sessione
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
         Pollaio pollaio;
 
         //Crea il pollaio se non esiste
@@ -51,15 +52,15 @@ public class PollaioController {
     }
 
     @PostMapping("/inserisci-gallina")
-    public String inserisciGallina(HttpSession session,String razza, int eta, int peso, HttpServletRequest request){
-        Utente utente = getUtente(session);
-        if(utente == null) return "login";
+    public String inserisciGallina( final HttpSession session,final String razza, final int eta, final int peso, final HttpServletRequest request){
+        final Utente utente = getUtente(session);
+        if(utente == null) return LOGIN;
 
         // Ottieni il riferimento della pagina precedente
-        String referer = request.getHeader("Referer");
+        final String referer = request.getHeader("Referer");
 
-        Gallina gallina = new Gallina(razza, eta, peso, utente.getPollaio());
-        Pollaio pollaioAggiornato = pollaioService.addGallina(utente.getPollaio(), gallina);
+        final Gallina gallina = new Gallina(razza, eta, peso, utente.getPollaio());
+        final Pollaio pollaioAggiornato = pollaioService.addGallina(utente.getPollaio(), gallina);
 
         utente.setPollaio(pollaioAggiornato);
         session.setAttribute("user", utente);
@@ -69,20 +70,20 @@ public class PollaioController {
     }
 
     @PostMapping("/rimuovi-gallina")
-    public String rimuoviGallina(@RequestParam("gallinaId") Long id, HttpSession session, HttpServletRequest request) {
-        String referer = request.getHeader("Referer");
+    public String rimuoviGallina(@RequestParam("gallinaId") final Long id, final HttpSession session, final HttpServletRequest request) {
+        final String referer = request.getHeader("Referer");
 
-        Utente utente = getUtente(session);
-        if (utente == null) return "login";
+        final Utente utente = getUtente(session);
+        if (utente == null) return LOGIN;
 
-        Pollaio pollaio = utente.getPollaio();
+        final Pollaio pollaio = utente.getPollaio();
         if (pollaio == null) return "pollaio";
 
-        Optional<Gallina> gallinaDaRimuovere = pollaio.getGallinaByid(id);
+        final Optional<Gallina> gallinaDaRimuovere = pollaio.getGallinaByid(id);
 
         if (gallinaDaRimuovere.isPresent()){
-            Gallina gallina = gallinaDaRimuovere.get();
-            Pollaio pollaioAggiornato = pollaioService.removeGallina(pollaio, gallina);
+            final Gallina gallina = gallinaDaRimuovere.get();
+            final Pollaio pollaioAggiornato = pollaioService.removeGallina(pollaio, gallina);
             utente.setPollaio(pollaioAggiornato);
             session.setAttribute("user", utente);
         }
@@ -91,13 +92,13 @@ public class PollaioController {
     }
 
 
-    Utente getUtente(HttpSession session){
+    final Utente getUtente(final HttpSession session){
         //prende l'Utente dalla sessione e verifica se esiste nel database
-        Utente sessionUser = (Utente) session.getAttribute("user");
+        final Utente sessionUser = (Utente) session.getAttribute("user");
         if (sessionUser == null) {
             return null;
         }
-        Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
+        final Utente utente = utenteService.getUtenteById(sessionUser.getId()).get();
 
         return utente;
     }

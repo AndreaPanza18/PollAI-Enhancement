@@ -2,8 +2,19 @@ package com.example.pollai.magazzino;
 
 import com.example.pollai.pollaio.Gallina;
 import com.example.pollai.utente.Utente;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Transient;
 
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +22,8 @@ import java.util.List;
 @Entity
 @Table(name = "magazzino")
 public class Magazzino implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,12 +66,12 @@ public class Magazzino implements Serializable {
         this.farmaci = farmaci;
     }
 
-    public void addFarmaco(Farmaco farmaco) {
+    public void addFarmaco(final Farmaco farmaco) {
         farmaci.add(farmaco);
         farmaco.setMagazzino(this);
     }
 
-    public void removeFarmaco(Farmaco farmaco) {
+    public void removeFarmaco(final Farmaco farmaco) {
         farmaci.remove(farmaco);
         farmaco.setMagazzino(null);
     }
@@ -71,12 +84,12 @@ public class Magazzino implements Serializable {
         this.cibo = cibo;
     }
 
-    public void addCibo(Cibo cibo1) {
+    public void addCibo(final Cibo cibo1) {
         cibo.add(cibo1);
         cibo1.setMagazzino(this);
     }
 
-    public void removeCibo(Cibo cibo1) {
+    public void removeCibo(final Cibo cibo1) {
         cibo.remove(cibo1);
         cibo1.setMagazzino(null);
     }
@@ -92,15 +105,20 @@ public class Magazzino implements Serializable {
     public void setNotifica(){
         Notifica notifica = new Notifica();
         int quantity = 0;
-        for(Cibo c : cibo){
+        for(final Cibo c : cibo){
             quantity += c.getQuantita();
         }
-        if(quantity < 200){
-            notifica.setAvvertimento("We are running out of food supplies");
-        } else if(quantity < 400){
-            notifica.setAvvertimento("We will soon run out of food supplies");
-        } else{
-            notifica.setAvvertimento("Our food supplies are enough");
+
+        switch (quantity / 200) {
+            case 0: // quantity da 0 a 199
+                notifica.setAvvertimento("We are running out of food supplies");
+                break;
+            case 1: // quantity da 200 a 399
+                notifica.setAvvertimento("We will soon run out of food supplies");
+                break;
+            default: // quantity >= 400
+                notifica.setAvvertimento("Our food supplies are enough");
+                break;
         }
         this.notifica = notifica;
     }

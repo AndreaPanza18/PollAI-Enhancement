@@ -30,7 +30,7 @@ public class MainController {
 
     //Mapping verso la pagina di registrazione per l'Utente
     @GetMapping("/register-page")
-    public String registerPage(Model model){
+    public String registerPage(final Model model){
         model.addAttribute("user", new Utente());
         return "registeruser";
     }
