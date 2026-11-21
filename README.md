@@ -4,7 +4,10 @@
 
 ## Questa repository contiene l'implementazione del progetto di FIA (fondamenti di intelligenza artificiale) ed è diviso in tre parti:
 
-Mark Down da rifare completamente
+
+1. Andrea
+2. Isabella
+3. Mauro
 
 # Dependability Labs
 - [Lab1_CICD](dependability-lab/Lab1_CICD.md)
