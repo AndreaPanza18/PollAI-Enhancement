@@ -46,3 +46,18 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Additional generated Dart, Flutter and Gradle files
+.packages
+.flutter-plugins
+**/.gradle/
+**/ephemeral/
+**/local.properties
+
+# Local configuration and signing credentials
+.env
+.env.*
+!.env.example
+**/*.p12
+**/*.mobileprovision
+**/*.provisionprofile
