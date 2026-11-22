@@ -10,7 +10,7 @@ We engineered 3 separate Dockerfiles for our project:
 Multi-stage builds separate build-time dependencies from the runtime image, reducing its size.
 A `.dockerignore` file has been attached to each Dockerfile, excluding unnecessary files for size reduction.
 
-### Dockerfile 1
+### Webapp  
 
 The [Webapp Dockerfile](../webapp/Dockerfile) uses a multi-stage build:
 1. Download the Maven 3.9 image with JDK 21 from Docker Hub;
@@ -25,7 +25,7 @@ The [Webapp Dockerfile](../webapp/Dockerfile) uses a multi-stage build:
 10. Document the exposed port;
 11. Set the entry command to start Tomcat.
 
-### Dockerfile 2
+### EurekaServer
 
 The [EurekaServer Dockerfile](../modulo-AI/EurekaServer/Dockerfile) uses a multi-stage build:
 1. Download the Maven 4.0.0-rc-5 image with JDK 21 from Docker Hub;
@@ -40,7 +40,7 @@ The [EurekaServer Dockerfile](../modulo-AI/EurekaServer/Dockerfile) uses a multi
 10. Document the exposed port;
 11. Set the entry command to run the JAR file.
 
-### Dockerfile 3
+### UovaService
 
 The [UovaService Dockerfile](../modulo-AI/UovaService/Dockerfile) is organized as follows:
 1. Download the Python 3.11 slim image from Docker Hub;
