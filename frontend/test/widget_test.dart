@@ -1,30 +1,37 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:frontend/app.dart';
 
-import 'package:frontend/main.dart';
+import 'helpers/fakes.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('shows the login screen when there is no saved session', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      PollAIApp(
+        repository: FakeUtenteRepository(onRestoreSession: () async => null),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Sign in to your account'), findsOneWidget);
+    expect(find.text('Log in'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('opens the user area when a saved session is valid', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      PollAIApp(
+        repository: FakeUtenteRepository(
+          onRestoreSession: () async => sampleUser,
+          onGetAreaUtente: () async => sampleUser,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('User area'), findsOneWidget);
+    expect(find.text('Welcome back, Mario!'), findsOneWidget);
   });
 }
