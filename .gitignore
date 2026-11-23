@@ -40,4 +40,3 @@ __pycache__/
 
 # Credenziali locali
 secrets.env
-/webapp/src/main/resources/db.properties

@@ -1,21 +1,27 @@
 package com.example.pollai.utente;
 
-import com.example.pollai.pollaio.Pollaio;
-import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.web.server.ResponseStatusException;
+import com.example.pollai.utente.dto.LoginRequest;
+import com.example.pollai.utente.dto.LoginResponse;
+import com.example.pollai.utente.dto.RegisterRequest;
+import com.example.pollai.utente.dto.UtenteResponse;
+import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,140 +30,216 @@ class UtenteControllerTest {
     @Mock
     private UtenteService utenteService;
 
-    @Mock
-    private HttpSession session;
-
-    @Mock
-    private Model model;
-
     @InjectMocks
     private UtenteController utenteController;
 
-    private Utente testUser;
+    private final LoginResponse loginResponse = new LoginResponse(
+            "jwt-token", "Bearer", 3600L,
+            new UtenteResponse(1L, "Mario", "Rossi", "3331234567", true,
+                    "IT12345678901", "mario.rossi@example.com"),
+            false);
 
-    @BeforeEach
-    void setup() {
-        testUser = new Utente();
-        testUser.setEmail("mario.rossi@example.com");
-        testUser.setPassword("Sup3rm@n!");
-        testUser.setNome("Mario");
-        testUser.setPollaio(null);
+    @Test
+    void loginReturnsBadRequestForNullBody() {
+        ResponseEntity<LoginResponse> response = utenteController.login(null);
 
-        Pollaio testPollaio = new Pollaio();
-        testPollaio.setQuantity(10);
-        testUser.setPollaio(testPollaio);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verifyNoInteractions(utenteService);
     }
 
     @Test
-    void testLoginSuccess() {
-        when(utenteService.autenticazione(eq("mario.rossi@example.com"), eq("Sup3rm@n!")))
-                .thenReturn(Optional.of(testUser));
+    void loginReturnsOkWhenServiceAuthenticates() {
+        LoginRequest request = new LoginRequest("mario.rossi@example.com", "secret");
+        when(utenteService.login(request)).thenReturn(Optional.of(loginResponse));
 
-        String result = utenteController.login("mario.rossi@example.com", "Sup3rm@n!",
-                new MockHttpSession(),
-                new MockHttpServletRequest(),
-                null);
+        ResponseEntity<LoginResponse> response = utenteController.login(request);
 
-        assertEquals("/areautente", result);
-        verify(utenteService, times(1)).autenticazione(anyString(), anyString());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertSame(loginResponse, response.getBody());
     }
 
     @Test
-    void testLoginInvalidCredentials() {
-        when(utenteService.autenticazione(eq("mario.rossi@example.com"), eq("wrongpassword")))
-                .thenReturn(Optional.empty());
+    void loginReturnsUnauthorizedWhenCredentialsAreInvalid() {
+        LoginRequest request = new LoginRequest("mario.rossi@example.com", "wrong");
+        when(utenteService.login(request)).thenReturn(Optional.empty());
 
-        String result = utenteController.login("mario.rossi@example.com", "wrongpassword",
-                new MockHttpSession(),
-                new MockHttpServletRequest(),
-                model);
+        ResponseEntity<LoginResponse> response = utenteController.login(request);
 
-        assertEquals("redirect:/", result);
-        verify(utenteService, times(1)).autenticazione(anyString(), anyString());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
-    void testRegister() {
-        when(utenteService.saveUtente(any(Utente.class), eq("Sup3rm@n!")))
-                .thenReturn(testUser);
+    void registerReturnsBadRequestForNullBody() {
+        ResponseEntity<LoginResponse> response = utenteController.register(null);
 
-        String result = utenteController.register(testUser, "Sup3rm@n!", new MockHttpSession());
-
-        assertEquals("configura-pollaio", result);
-        verify(utenteService, times(1)).saveUtente(any(Utente.class), eq("Sup3rm@n!"));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verifyNoInteractions(utenteService);
     }
 
     @Test
-    void testAreaUtenteWithUserSession() {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("user", testUser);
+    void registerReturnsCreatedWithLoginResponse() {
+        RegisterRequest request = new RegisterRequest("Mario", "Rossi", "3331234567", true,
+                "IT12345678901", "mario.rossi@example.com", "secret");
+        when(utenteService.register(request)).thenReturn(loginResponse);
 
-        String result = utenteController.areaUtente(session, model);
+        ResponseEntity<LoginResponse> response = utenteController.register(request);
 
-        assertEquals("areautente", result);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertSame(loginResponse, response.getBody());
     }
 
     @Test
-    void testAreaUtenteWithoutUserSession() {
-        String result = utenteController.areaUtente(session, model);
+    void getUsersReturnsPublicUserDtos() {
+        List<UtenteResponse> users = List.of(loginResponse.user());
+        when(utenteService.getAllUtentiResponse()).thenReturn(users);
 
-        assertEquals("login", result);
+        assertSame(users, utenteController.getUsers());
+        verify(utenteService).getAllUtentiResponse();
     }
 
     @Test
-    void testGetAllUsers() {
-        when(utenteService.getAllUtenti()).thenReturn(Collections.singletonList(testUser));
-
-        String result = utenteController.getUsers(model);
-
-        assertEquals("allusers", result);
-        verify(utenteService, times(1)).getAllUtenti();
+    void profileRejectsMissingOrMalformedAuthorizationHeader() {
+        assertEquals(HttpStatus.BAD_REQUEST, utenteController.profilo(null).getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, utenteController.profilo("Basic token").getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, utenteController.profilo("Bearer   ").getStatusCode());
+        verifyNoInteractions(utenteService);
     }
 
     @Test
-    void testLoginRedirectToConfiguraPollaioWhenNoPollaio() {
-        when(utenteService.autenticazione(eq("mario.rossi@example.com"), eq("Sup3rm@n!")))
-                .thenReturn(Optional.of(testUser));
+    void profilePassesBearerTokenAndReturnsUser() {
+        when(utenteService.getProfilo("jwt-token")).thenReturn(loginResponse.user());
 
-        testUser.setPollaio(null);
+        ResponseEntity<UtenteResponse> response = utenteController.profilo("Bearer jwt-token ");
 
-        String result = utenteController.login("mario.rossi@example.com", "Sup3rm@n!",
-                new MockHttpSession(), new MockHttpServletRequest(), null);
-
-        assertEquals("configura-pollaio", result);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertSame(loginResponse.user(), response.getBody());
+        verify(utenteService).getProfilo("jwt-token");
     }
 
     @Test
-    void testAreaUtenteRedirectToConfiguraPollaioWhenNoPollaio() {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("user", testUser);
+    void profileReturnsUnauthorizedForInvalidJwtOrSubject() {
+        when(utenteService.getProfilo("bad-token")).thenThrow(new JwtException("invalid"));
 
-        testUser.setPollaio(null);
-
-        String result = utenteController.areaUtente(session, model);
-
-        assertEquals("configura-pollaio", result);
+        assertEquals(HttpStatus.UNAUTHORIZED,
+                utenteController.profilo("Bearer bad-token").getStatusCode());
+        when(utenteService.getProfilo("bad-subject")).thenThrow(new IllegalArgumentException("invalid subject"));
+        assertEquals(HttpStatus.UNAUTHORIZED,
+                utenteController.profilo("Bearer bad-subject").getStatusCode());
     }
 
     @Test
-    void testProfilo() {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("user", testUser);
+    void profileDoesNotTranslateNotFoundStatusFromService() {
+        org.springframework.web.server.ResponseStatusException notFound =
+                new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND);
+        when(utenteService.getProfilo("known-token")).thenThrow(notFound);
 
-        String result = utenteController.profilo(session);
-
-        assertEquals("profilo", result);
+        assertSame(notFound, assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                () -> utenteController.profilo("Bearer known-token")));
     }
 
     @Test
-    void testLogout() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setSession(session);
+    void areaUtenteValidatesHeaderAndReturnsUser() {
+        assertEquals(HttpStatus.BAD_REQUEST, utenteController.areaUtente("Token jwt-token").getStatusCode());
+        when(utenteService.getAreaUtente("jwt-token")).thenReturn(loginResponse.user());
 
-        String result = utenteController.logout(request);
+        ResponseEntity<UtenteResponse> response = utenteController.areaUtente("Bearer jwt-token");
 
-        assertEquals("login", result);
-        verify(session, times(1)).invalidate();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertSame(loginResponse.user(), response.getBody());
     }
 
+    @Test
+    void areaUtenteReturnsUnauthorizedForInvalidJwtAndPropagatesServiceStatuses() {
+        when(utenteService.getAreaUtente("invalid")).thenThrow(new JwtException("invalid"));
+        assertEquals(HttpStatus.UNAUTHORIZED,
+                utenteController.areaUtente("Bearer invalid").getStatusCode());
+
+        org.springframework.web.server.ResponseStatusException conflict =
+                new org.springframework.web.server.ResponseStatusException(HttpStatus.CONFLICT);
+        when(utenteService.getAreaUtente("unconfigured")).thenThrow(conflict);
+        assertSame(conflict, assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                () -> utenteController.areaUtente("Bearer unconfigured")));
+    }
+
+    // ===== Casi aggiuntivi per la copertura =====
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"Bearer", "Bearer ", "Bearer     ", "bearer abc", "Basic abc", "abc"})
+    void profiloReturnsBadRequestForInvalidAuthorizationHeader(String header) {
+        ResponseEntity<UtenteResponse> response = utenteController.profilo(header);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+        verifyNoInteractions(utenteService);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"Bearer", "Bearer ", "Bearer     ", "bearer abc", "Basic abc", "abc"})
+    void areaUtenteReturnsBadRequestForInvalidAuthorizationHeader(String header) {
+        ResponseEntity<UtenteResponse> response = utenteController.areaUtente(header);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+        verifyNoInteractions(utenteService);
+    }
+
+    @Test
+    void areaUtenteTrimsWhitespaceAroundBearerToken() {
+        when(utenteService.getAreaUtente("jwt-token")).thenReturn(loginResponse.user());
+
+        ResponseEntity<UtenteResponse> response = utenteController.areaUtente("Bearer    jwt-token   ");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertSame(loginResponse.user(), response.getBody());
+        verify(utenteService).getAreaUtente("jwt-token");
+    }
+
+    @Test
+    void areaUtenteReturnsUnauthorizedForInvalidSubject() {
+        when(utenteService.getAreaUtente("bad-subject")).thenThrow(new IllegalArgumentException("subject"));
+
+        ResponseEntity<UtenteResponse> response = utenteController.areaUtente("Bearer bad-subject");
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void areaUtentePropagatesNotFoundFromService() {
+        ResponseStatusException notFound = new ResponseStatusException(HttpStatus.NOT_FOUND);
+        when(utenteService.getAreaUtente("unknown-user")).thenThrow(notFound);
+
+        assertSame(notFound, assertThrows(ResponseStatusException.class,
+                () -> utenteController.areaUtente("Bearer unknown-user")));
+    }
+
+    @Test
+    void profiloUnauthorizedResponseHasNoBody() {
+        when(utenteService.getProfilo("expired")).thenThrow(new JwtException("expired"));
+
+        ResponseEntity<UtenteResponse> response = utenteController.profilo("Bearer expired");
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void registerPropagatesServiceExceptions() {
+        RegisterRequest request = new RegisterRequest("Mario", "Rossi", "3331234567", true,
+                "IT12345678901", "mario.rossi@example.com", "secret");
+        ResponseStatusException bad = new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        when(utenteService.register(request)).thenThrow(bad);
+
+        assertSame(bad, assertThrows(ResponseStatusException.class, () -> utenteController.register(request)));
+    }
+
+    @Test
+    void getUsersReturnsEmptyListWhenNoUsers() {
+        when(utenteService.getAllUtentiResponse()).thenReturn(List.of());
+
+        assertTrue(utenteController.getUsers().isEmpty());
+    }
 }
