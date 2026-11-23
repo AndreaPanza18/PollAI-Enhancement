@@ -114,9 +114,11 @@ public class Utente implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public Pollaio getPollaio(){
         return pollaio;
     }
+
     public void setPollaio(Pollaio pollaio){
         this.pollaio = pollaio;
     }

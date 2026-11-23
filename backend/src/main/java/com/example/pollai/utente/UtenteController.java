@@ -37,6 +37,18 @@ public class UtenteController {
     @Autowired
     private UtenteService utenteService;
 
+    /**
+     * Autentica un utente verificando le credenziali fornite e restituisce un token JWT.
+     * <p>
+     * Se il body della richiesta è {@code null}, viene restituito immediatamente un errore 400 Bad Request.
+     * In caso contrario, delega a {@link UtenteService#login(LoginRequest)} che restituisce un
+     * {@link Optional} di {@link LoginResponse}: se vuoto, le credenziali sono errate e viene
+     * restituito 401 Unauthorized.
+     *
+     * @param loginRequest le credenziali dell'utente (email e password)
+     * @return 200 OK con il token JWT se il login riesce, 401 Unauthorized se le credenziali sono errate,
+     *         400 Bad Request se il body è null
+     */
     @Operation(summary = "Autenticazione utente", description = "Verifica le credenziali e restituisce un token JWT.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login effettuato con successo",
@@ -60,6 +72,16 @@ public class UtenteController {
         return ResponseEntity.ok(response.get());
     }
 
+    /**
+     * Registra un nuovo utente e restituisce il token JWT associato.
+     * <p>
+     * Se il body della richiesta è {@code null}, viene restituito un errore 400 Bad Request.
+     * In caso contrario, delega a {@link UtenteService#register(RegisterRequest)} che crea
+     * l'utente nel database e genera il token JWT.
+     *
+     * @param registerRequest i dati per la registrazione (nome, email, password, ecc.)
+     * @return 201 Created con il token JWT se la registrazione riesce, 400 Bad Request se il body è null
+     */
     @Operation(summary = "Registrazione utente", description = "Crea un utente e restituisce il relativo token JWT.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Utente registrato",
@@ -75,6 +97,14 @@ public class UtenteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(utenteService.register(registerRequest));
     }
 
+    /**
+     * Restituisce l'elenco dei dati pubblici di tutti gli utenti registrati.
+     * <p>
+     * Endpoint pubblico che non richiede autenticazione. Delega a
+     * {@link UtenteService#getAllUtentiResponse()} per il recupero dei dati.
+     *
+     * @return lista di {@link UtenteResponse} con i dati pubblici di ciascun utente
+     */
     @Operation(summary = "Elenco utenti", description = "Restituisce i dati pubblici di tutti gli utenti.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Elenco restituito",
@@ -85,6 +115,18 @@ public class UtenteController {
         return utenteService.getAllUtentiResponse();
     }
 
+    /**
+     * Restituisce il profilo dell'utente autenticato, identificato dal token Bearer.
+     * <p>
+     * Estrae il token JWT dall'header {@code Authorization} tramite {@link #extractBearerToken(String)}.
+     * Se l'header manca o è malformato, restituisce 400 Bad Request.
+     * In caso di token non valido o scaduto, cattura le eccezioni {@link JwtException} e
+     * {@link IllegalArgumentException} restituendo 401 Unauthorized.
+     *
+     * @param authorizationHeader l'header Authorization con il token Bearer
+     * @return 200 OK con il profilo utente, 401 Unauthorized se il token è invalido,
+     *         404 Not Found se l'utente non esiste, 400 Bad Request se l'header è mancante
+     */
     @Operation(summary = "Profilo utente", description = "Restituisce il profilo associato al token Bearer.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Profilo restituito",
@@ -109,6 +151,19 @@ public class UtenteController {
         }
     }
 
+    /**
+     * Restituisce il profilo dell'utente autenticato solo se il "pollaio" è configurato.
+     * <p>
+     * Segue la stessa logica di estrazione del token di {@link #profilo(String)}.
+     * Delega a {@link UtenteService#getAreaUtente(String)} per verificare la configurazione
+     * del pollaio e restituire il profilo. Se il pollaio non è configurato, il servizio
+     * restituirà un errore 409 Conflict.
+     *
+     * @param authorizationHeader l'header Authorization con il token Bearer
+     * @return 200 OK con il profilo se il pollaio è configurato, 401 Unauthorized se il token è invalido,
+     *         404 Not Found se l'utente non esiste, 409 Conflict se il pollaio non è configurato,
+     *         400 Bad Request se l'header è mancante
+     */
     @Operation(
             summary = "Area utente",
             description = "Restituisce il profilo dell'utente autenticato se il pollaio è configurato."
@@ -137,6 +192,16 @@ public class UtenteController {
         }
     }
 
+    /**
+     * Estrae il token JWT dall'header Authorization in formato Bearer.
+     * <p>
+     * Verifica che l'header non sia {@code null}, inizi con {@code "Bearer "},
+     * e che il token estratto non sia vuoto. Restituisce il token pulito (trimmato)
+     * oppure {@code null} se la validazione fallisce.
+     *
+     * @param authorizationHeader l'header Authorization ricevuto nella richiesta HTTP
+     * @return il token JWT estratto e pulito, oppure {@code null} se l'header è invalido
+     */
     private String extractBearerToken(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             return null;
