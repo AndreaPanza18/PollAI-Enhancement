@@ -207,6 +207,7 @@
 						<configuration>
 							<excludes>
 								<exclude>com/example/pollai/**/dto/**</exclude>
+								<exclude>com/example/pollai/**/config/**</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -218,6 +219,7 @@
 						<configuration>
 							<excludes>
 								<exclude>com/example/pollai/**/dto/**</exclude>
+								<exclude>com/example/pollai/**/config/**</exclude>
 							</excludes>
 							<rules>
 								<rule>
