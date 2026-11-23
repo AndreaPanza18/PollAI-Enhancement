@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'features/salute/data/salute_repository.dart';
 import 'features/utente/data/utente_repository.dart';
 import 'features/utente/viewmodels/auth_view_model.dart';
 import 'features/utente/views/login_page.dart';
@@ -10,17 +11,23 @@ import 'features/utente/views/user_shell.dart';
 /// Radice dell'app: registra repository e ViewModel di sessione e mostra
 /// le schermate giuste in base allo stato di autenticazione.
 class PollAIApp extends StatelessWidget {
-  const PollAIApp({super.key, required this.repository});
+  const PollAIApp({
+    super.key,
+    required this.utenteRepository,
+    required this.saluteRepository,
+  });
 
-  final UtenteRepository repository;
+  final UtenteRepository utenteRepository;
+  final SaluteRepository saluteRepository;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<UtenteRepository>.value(value: repository),
+        Provider<UtenteRepository>.value(value: utenteRepository),
+        Provider<SaluteRepository>.value(value: saluteRepository),
         ChangeNotifierProvider<AuthViewModel>(
-          create: (_) => AuthViewModel(repository)..restoreSession(),
+          create: (_) => AuthViewModel(utenteRepository)..restoreSession(),
         ),
       ],
       child: MaterialApp(

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../salute/views/salute_page.dart';
 import 'area_utente_page.dart';
 import 'profile_page.dart';
 import 'widgets/user_sidebar.dart';
@@ -27,6 +28,7 @@ class _UserShellState extends State<UserShell> {
   Widget get _content {
     return switch (_current) {
       UserDestination.dashboard => const AreaUtentePage(),
+      UserDestination.health => const SalutePage(),
       UserDestination.profile => const ProfilePage(),
     };
   }

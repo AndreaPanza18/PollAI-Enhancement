@@ -12,6 +12,7 @@ import 'user_avatar.dart';
 /// i rispettivi package saranno esposti via API.
 enum UserDestination {
   dashboard('Dashboard', Icons.dashboard_outlined),
+  health('Health', Icons.medical_services_outlined),
   profile('Profile', Icons.person_outline);
 
   const UserDestination(this.label, this.icon);

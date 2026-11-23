@@ -14,4 +14,7 @@ abstract final class ApiConfig {
 
   /// Prefisso degli endpoint del package Utente (`UtenteController`).
   static const String userApiPath = '/api/v1/user';
+
+  /// Prefisso degli endpoint del package Salute (`SaluteController`).
+  static const String saluteApiPath = '/api/v1/salute';
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 public class Gallina implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(nullable = false, length = 20)

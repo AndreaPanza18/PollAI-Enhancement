@@ -1,3 +1,6 @@
+import 'package:frontend/features/salute/data/models/gallina.dart';
+import 'package:frontend/features/salute/data/models/salute_consiglio_response.dart';
+import 'package:frontend/features/salute/data/salute_repository.dart';
 import 'package:frontend/features/utente/data/models/login_response.dart';
 import 'package:frontend/features/utente/data/models/register_request.dart';
 import 'package:frontend/features/utente/data/models/utente.dart';
@@ -63,4 +66,26 @@ class FakeUtenteRepository implements UtenteRepository {
   Future<void> logout() async {
     logoutCalls++;
   }
+}
+
+/// Repository finto per il package Salute: ogni chiamata restituisce valori vuoti
+/// o esegue la funzione configurata nel test.
+class FakeSaluteRepository implements SaluteRepository {
+  FakeSaluteRepository({
+    this.onGetGalline,
+    this.onRichiediConsiglio,
+  });
+
+  final Future<List<Gallina>> Function()? onGetGalline;
+  final Future<SaluteConsiglioResponse> Function(int idGallina)? onRichiediConsiglio;
+
+  @override
+  Future<List<Gallina>> getGalline() =>
+      onGetGalline != null ? onGetGalline!() : Future.value([]);
+
+  @override
+  Future<SaluteConsiglioResponse> richiediConsiglio(int idGallina) =>
+      onRichiediConsiglio != null
+          ? onRichiediConsiglio!(idGallina)
+          : Future.error(Exception('Not implemented'));
 }

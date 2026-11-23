@@ -9,7 +9,8 @@ void main() {
   ) async {
     await tester.pumpWidget(
       PollAIApp(
-        repository: FakeUtenteRepository(onRestoreSession: () async => null),
+        utenteRepository: FakeUtenteRepository(onRestoreSession: () async => null),
+        saluteRepository: FakeSaluteRepository(),
       ),
     );
     await tester.pumpAndSettle();
@@ -23,10 +24,11 @@ void main() {
   ) async {
     await tester.pumpWidget(
       PollAIApp(
-        repository: FakeUtenteRepository(
+        utenteRepository: FakeUtenteRepository(
           onRestoreSession: () async => sampleUser,
           onGetAreaUtente: () async => sampleUser,
         ),
+        saluteRepository: FakeSaluteRepository(),
       ),
     );
     await tester.pumpAndSettle();
