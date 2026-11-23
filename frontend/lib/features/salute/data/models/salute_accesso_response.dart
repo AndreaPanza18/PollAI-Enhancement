@@ -12,8 +12,8 @@ class SaluteAccessoResponse {
 
   factory SaluteAccessoResponse.fromJson(Map<String, dynamic> json) {
     return SaluteAccessoResponse(
-      utente: json['utente'] as Map<String, dynamic> ?? {},
-      galline: json['galline'] as List<dynamic> ?? [],
+      utente: json['utente'] as Map<String, dynamic>,
+      galline: json['galline'] as List<dynamic>,
     );
   }
 }

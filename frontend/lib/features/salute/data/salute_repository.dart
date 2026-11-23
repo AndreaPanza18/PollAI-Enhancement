@@ -40,7 +40,7 @@ class SaluteRepositoryImpl implements SaluteRepository {
     final token = await _requireToken();
     try {
       final response = await _api.accessoSalute(token);
-      return _api.parseGalline(response.galline ?? []);
+      return _api.parseGalline(response.galline);
     } on ConflictException {
       throw const PollaioNonConfiguratoException();
     }

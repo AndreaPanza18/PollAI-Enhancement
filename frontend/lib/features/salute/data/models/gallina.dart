@@ -36,7 +36,7 @@ class Gallina {
   String get pesoFormattato => '$peso g';
 
   /// Restituisce la temperatura formattata in gradi Celsius.
-  String? get temperaturaFormattata => temperatura != null ? '${temperatura}°C' : null;
+  String? get temperaturaFormattata => temperatura != null ? '$temperatura°C' : null;
 
   @override
   bool operator ==(Object other) =>
