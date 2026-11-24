@@ -25,6 +25,25 @@ The [Webapp Dockerfile](../webapp/Dockerfile) uses a multi-stage build:
 10. Document the exposed port;
 11. Set the entry command to start Tomcat.
 
+```
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+COPY src ./src
+RUN mvn -B clean package -DskipTests
+
+FROM tomcat:10.1-jre21-temurin
+RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=build /app/target/WebApp-1.0.0.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+```
+
+
 ### EurekaServer
 
 The [EurekaServer Dockerfile](../modulo-AI/EurekaServer/Dockerfile) uses a multi-stage build:
@@ -40,6 +59,29 @@ The [EurekaServer Dockerfile](../modulo-AI/EurekaServer/Dockerfile) uses a multi
 10. Document the exposed port;
 11. Set the entry command to run the JAR file.
 
+```
+FROM maven:4.0.0-rc-5-eclipse-temurin-21 AS build
+WORKDIR /app
+
+
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+
+
+COPY src ./src
+RUN mvn -B clean package -DskipTests
+
+
+FROM eclipse-temurin:21-jre-noble
+WORKDIR /app
+COPY --from=build /app/target/EurekaServer-1.0.0.jar app.jar
+
+
+EXPOSE 8761
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+
 ### UovaService
 
 The [UovaService Dockerfile](../modulo-AI/UovaService/Dockerfile) is organized as follows:
@@ -51,6 +93,27 @@ The [UovaService Dockerfile](../modulo-AI/UovaService/Dockerfile) is organized a
 6. Copy the Flask application and AI model files into the image;
 7. Document the exposed port;
 8. Set the entry command to start the Flask application.
+
+```
+FROM python:3.11-slim
+WORKDIR /app
+
+
+ENV PYTHONUNBUFFERED=1 \
+   PIP_DISABLE_PIP_VERSION_CHECK=1 \
+   UOVA_SERVICE_PORT=8050
+
+
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+COPY flask_app.py uova_model.py uova_model.pkl ./
+
+
+EXPOSE 8050
+CMD ["python", "flask_app.py"]
+```
 
 ## Docker Compose
 
