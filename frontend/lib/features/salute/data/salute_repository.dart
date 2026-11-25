@@ -11,7 +11,7 @@ class PollaioNonConfiguratoException implements Exception {
 }
 
 /// Punto di accesso ai dati del package Salute per i ViewModel.
-/// Gestisce il token JWT allegandolo alle chiamate protette.
+/// Allega il token JWT (letto dallo storage condiviso) alle chiamate protette.
 abstract class SaluteRepository {
   /// Restituisce la lista delle galline dell'utente autenticato.
   /// Lancia [UnauthorizedException] se manca il token o è scaduto.
@@ -33,14 +33,12 @@ class SaluteRepositoryImpl implements SaluteRepository {
   final SaluteApiService _api;
   final TokenStorage _storage;
 
-  AuthToken? _token;
-
   @override
   Future<List<Gallina>> getGalline() async {
     final token = await _requireToken();
     try {
       final response = await _api.accessoSalute(token);
-      return _api.parseGalline(response.galline);
+      return response.galline;
     } on ConflictException {
       throw const PollaioNonConfiguratoException();
     }
@@ -52,12 +50,13 @@ class SaluteRepositoryImpl implements SaluteRepository {
     return _api.richiediConsiglio(idGallina: idGallina, token: token);
   }
 
+  /// Legge sempre il token dallo storage condiviso, senza copie locali:
+  /// dopo un logout o un nuovo login vale subito il token aggiornato.
   Future<String> _requireToken() async {
-    final token = _token ?? await _storage.read();
+    final token = await _storage.read();
     if (token == null || token.isExpired) {
       throw const UnauthorizedException('Your session has expired.');
     }
-    _token = token;
     return token.value;
   }
 }

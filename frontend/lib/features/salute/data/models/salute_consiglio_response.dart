@@ -1,17 +1,30 @@
-/// Risposta di `POST /consiglio/{idGallina}`: contiene il messaggio di salute.
-///
-/// Il backend restituisce un JSON con la chiave `message`.
-class SaluteConsiglioResponse {
-  const SaluteConsiglioResponse({required this.message});
+/// Stato di salute restituito dal backend (`StatoSalute`).
+enum StatoSalute {
+  buona,
+  attenzione;
 
+  /// Un valore mancante o sconosciuto viene trattato come `attenzione`
+  /// (scelta prudente: meglio un falso allarme che nascondere un problema).
+  static StatoSalute fromJson(String? value) =>
+      value == 'BUONA' ? buona : attenzione;
+}
+
+/// Risposta di `POST /consiglio/{idGallina}` (`ConsiglioSaluteResponse`).
+class SaluteConsiglioResponse {
+  const SaluteConsiglioResponse({required this.stato, required this.message});
+
+  final StatoSalute stato;
+
+  /// Testo del consiglio, da mostrare così com'è.
   final String message;
 
   factory SaluteConsiglioResponse.fromJson(Map<String, dynamic> json) {
     return SaluteConsiglioResponse(
+      stato: StatoSalute.fromJson(json['stato'] as String?),
       message: json['message'] as String? ?? '',
     );
   }
 
-  /// Restituisce `true` se il messaggio indica che la gallina non è in buona salute.
-  bool get isUnhealthy => message.toLowerCase().contains('not');
+  /// `true` se la gallina richiede attenzione.
+  bool get isUnhealthy => stato == StatoSalute.attenzione;
 }

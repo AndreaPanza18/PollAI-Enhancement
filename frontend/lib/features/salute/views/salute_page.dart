@@ -282,13 +282,6 @@ class _GallinaDetailsPanel extends StatelessWidget {
                 _DetailRow(label: 'Breed', value: gallina.razza),
                 _DetailRow(label: 'Age', value: '${gallina.eta} years'),
                 _DetailRow(label: 'Weight', value: gallina.pesoFormattato),
-                if (gallina.temperaturaFormattata != null)
-                  _DetailRow(
-                    label: 'Temperature',
-                    value: gallina.temperaturaFormattata!,
-                  ),
-                if (gallina.mangime != null && gallina.mangime!.isNotEmpty)
-                  _DetailRow(label: 'Feed', value: gallina.mangime!),
                 const SizedBox(height: 20),
                 // Pulsante per richiedere consiglio
                 PrimaryButton(

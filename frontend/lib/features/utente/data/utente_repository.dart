@@ -44,8 +44,6 @@ class UtenteRepositoryImpl implements UtenteRepository {
   final UtenteApiService _api;
   final TokenStorage _storage;
 
-  AuthToken? _token;
-
   @override
   Future<Utente?> restoreSession() async {
     final stored = await _storage.read();
@@ -55,9 +53,7 @@ class UtenteRepositoryImpl implements UtenteRepository {
       return null;
     }
     try {
-      final user = await _api.getProfilo(stored.value);
-      _token = stored;
-      return user;
+      return await _api.getProfilo(stored.value);
     } on UnauthorizedException {
       await _storage.clear();
       return null;
@@ -100,26 +96,22 @@ class UtenteRepositoryImpl implements UtenteRepository {
   }
 
   @override
-  Future<void> logout() async {
-    _token = null;
-    await _storage.clear();
-  }
+  Future<void> logout() => _storage.clear();
 
-  Future<void> _saveSession(LoginResponse response) async {
-    final token = AuthToken(
-      value: response.accessToken,
-      expiresAt: DateTime.now().add(Duration(seconds: response.expiresIn)),
+  Future<void> _saveSession(LoginResponse response) {
+    return _storage.write(
+      AuthToken(
+        value: response.accessToken,
+        expiresAt: DateTime.now().add(Duration(seconds: response.expiresIn)),
+      ),
     );
-    _token = token;
-    await _storage.write(token);
   }
 
   Future<String> _requireToken() async {
-    final token = _token ?? await _storage.read();
+    final token = await _storage.read();
     if (token == null || token.isExpired) {
       throw const UnauthorizedException('Your session has expired.');
     }
-    _token = token;
     return token.value;
   }
 }

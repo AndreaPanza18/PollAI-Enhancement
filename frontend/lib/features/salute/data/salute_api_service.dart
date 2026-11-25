@@ -1,7 +1,6 @@
 import '../../../core/config/api_config.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
-import 'models/gallina.dart';
 import 'models/salute_accesso_response.dart';
 import 'models/salute_consiglio_response.dart';
 
@@ -14,14 +13,14 @@ class SaluteApiService {
 
   static const String _base = ApiConfig.saluteApiPath;
 
-  /// `GET /accesso-salute` — 200 con la lista delle galline,
+  /// `GET /accesso-salute` — 200 con utente e galline,
   /// 409 se il pollaio non è configurato.
   Future<SaluteAccessoResponse> accessoSalute(String token) async {
     final json = await _client.get('$_base/accesso-salute', bearerToken: token);
     return _parse(json, SaluteAccessoResponse.fromJson);
   }
 
-  /// `POST /consiglio/{idGallina}` — 200 con il messaggio di salute,
+  /// `POST /consiglio/{idGallina}` — 200 con stato e messaggio di salute,
   /// 404 se la gallina non esiste.
   Future<SaluteConsiglioResponse> richiediConsiglio({
     required int idGallina,
@@ -32,19 +31,6 @@ class SaluteApiService {
       bearerToken: token,
     );
     return _parse(json, SaluteConsiglioResponse.fromJson);
-  }
-
-  /// Converte la lista grezza di JSON in oggetti [Gallina].
-  List<Gallina> parseGalline(List<dynamic> rawList) {
-    const error = ApiException('Unexpected response from the server.');
-    try {
-      return rawList.map((item) {
-        if (item is! Map<String, dynamic>) throw error;
-        return Gallina.fromJson(item);
-      }).toList();
-    } on TypeError {
-      throw error;
-    }
   }
 
   T _parse<T>(Object? json, T Function(Map<String, dynamic>) fromJson) {

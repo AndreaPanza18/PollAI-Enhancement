@@ -19,26 +19,33 @@ abstract class TokenStorage {
 
 /// Implementazione basata su Keychain / Keystore (e localStorage su web).
 ///
+/// Tiene anche una copia in memoria: l'istanza è condivisa da tutti i
+/// repository, quindi login e logout sono visibili subito a chiunque
+/// legga il token (nessun repository deve avere una propria copia).
+///
 /// Gli errori della piattaforma non devono bloccare l'app: in caso di
 /// problemi la sessione resta valida solo in memoria.
 class SecureTokenStorage implements TokenStorage {
   SecureTokenStorage({FlutterSecureStorage? storage})
-    : _storage = storage ?? const FlutterSecureStorage();
+      : _storage = storage ?? const FlutterSecureStorage();
 
   static const _tokenKey = 'pollai.access_token';
   static const _expiresAtKey = 'pollai.expires_at';
 
   final FlutterSecureStorage _storage;
+  AuthToken? _cache;
 
   @override
   Future<AuthToken?> read() async {
+    final cached = _cache;
+    if (cached != null) return cached;
     try {
       final value = await _storage.read(key: _tokenKey);
       final expiresAtRaw = await _storage.read(key: _expiresAtKey);
       if (value == null || expiresAtRaw == null) return null;
       final expiresAt = DateTime.tryParse(expiresAtRaw);
       if (expiresAt == null) return null;
-      return AuthToken(value: value, expiresAt: expiresAt);
+      return _cache = AuthToken(value: value, expiresAt: expiresAt);
     } catch (_) {
       return null;
     }
@@ -46,6 +53,7 @@ class SecureTokenStorage implements TokenStorage {
 
   @override
   Future<void> write(AuthToken token) async {
+    _cache = token;
     try {
       await _storage.write(key: _tokenKey, value: token.value);
       await _storage.write(
@@ -59,6 +67,7 @@ class SecureTokenStorage implements TokenStorage {
 
   @override
   Future<void> clear() async {
+    _cache = null;
     try {
       await _storage.delete(key: _tokenKey);
       await _storage.delete(key: _expiresAtKey);
