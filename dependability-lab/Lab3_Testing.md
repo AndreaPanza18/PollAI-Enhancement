@@ -1,7 +1,7 @@
 # Testing Strategy Report — PollAI Enhancement
 
 ## 1. Overview & Tooling
-To guarantee software dependability and prevent regressions in the **PollAI** web application (`webapp` module), we implemented an automated unit testing suite built with **JUnit Jupiter (6.1.3)** and **Mockito (5.24.0)**, managed via **Maven**. 
+To guarantee software dependability and prevent regressions in the **PollAI** web application (`webapp` module), we implemented an automated unit testing suite built with **JUnit Jupiter (5.11.4)** and **Mockito (5.24.0)**, managed via **Maven**. 
 
 Our testing strategy focuses on verifying critical business rules, data validation, and HTTP controller behavior in isolation, decoupled from the relational database and the external Python/Flask AI prediction microservice (`UovaService`).
 
