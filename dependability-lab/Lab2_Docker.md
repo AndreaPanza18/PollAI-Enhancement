@@ -25,7 +25,7 @@ The [Webapp Dockerfile](../webapp/Dockerfile) uses a multi-stage build:
 10. Document the exposed port;
 11. Set the entry command to start Tomcat.
 
-```
+```Dockerfile
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
@@ -59,7 +59,7 @@ The [EurekaServer Dockerfile](../modulo-AI/EurekaServer/Dockerfile) uses a multi
 10. Document the exposed port;
 11. Set the entry command to run the JAR file.
 
-```
+```Dockerfile
 FROM maven:4.0.0-rc-5-eclipse-temurin-21 AS build
 WORKDIR /app
 
@@ -94,7 +94,7 @@ The [UovaService Dockerfile](../modulo-AI/UovaService/Dockerfile) is organized a
 7. Document the exposed port;
 8. Set the entry command to start the Flask application.
 
-```
+```Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
 
