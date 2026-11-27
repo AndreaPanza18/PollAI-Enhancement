@@ -11,3 +11,4 @@
 - [Lab3_Testing](dependability-lab/Lab3_Testing.md)
 - [Lab4_Coverage](dependability-lab/Lab4_Coverage.md) & [Lab4_Mutation](dependability-lab/Lab4_Mutation.md)
 - [Lab5_Verification](dependability-lab/Lab5_Verification.md)
+- [Lab6_Benchmarking](dependability-lab/Lab6_Benchmarking.md)
