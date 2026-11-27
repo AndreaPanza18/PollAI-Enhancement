@@ -20,10 +20,8 @@ public class ProduzioneService {
     }
 
     public DatiProduzione aggiornaUovaGiorno(int uova, DatiProduzione produzione, LocalDate date){
-
         produzione.aggiungiUova(date, uova);
         return produzioneDAO.save(produzione);
-
     }
 
     public int getProduzionePeriodo(LocalDate date, DatiProduzione produzione){
