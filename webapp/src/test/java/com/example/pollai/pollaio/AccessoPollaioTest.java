@@ -4,9 +4,6 @@ package com.example.pollai.pollaio;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNot.not;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;

@@ -1,6 +1,5 @@
 package com.example.pollai.magazzino;
 
-import com.example.pollai.pollaio.Pollaio;
 import com.example.pollai.utente.Utente;
 import com.example.pollai.utente.UtenteController;
 import com.example.pollai.utente.UtenteService;

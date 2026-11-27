@@ -1,9 +1,7 @@
 package com.example.pollai.salute;
 
-import ch.qos.logback.core.model.Model;
 import com.example.pollai.pollaio.Gallina;
 import com.example.pollai.pollaio.Pollaio;
-import com.example.pollai.pollaio.PollaioService;
 import com.example.pollai.utente.Utente;
 import com.example.pollai.utente.UtenteService;
 import jakarta.servlet.http.HttpSession;

@@ -1,6 +1,5 @@
 package com.example.pollai.utente;
 
-import com.example.pollai.magazzino.Magazzino;
 import com.example.pollai.pollaio.Pollaio;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

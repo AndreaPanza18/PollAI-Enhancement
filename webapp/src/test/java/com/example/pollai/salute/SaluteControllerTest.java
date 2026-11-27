@@ -1,8 +1,5 @@
 package com.example.pollai.salute;
 
-import com.example.pollai.magazzino.Magazzino;
-import com.example.pollai.magazzino.MagazzinoController;
-import com.example.pollai.magazzino.MagazzinoService;
 import com.example.pollai.pollaio.Gallina;
 import com.example.pollai.pollaio.Pollaio;
 import com.example.pollai.utente.Utente;
@@ -15,18 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

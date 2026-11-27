@@ -1,7 +1,6 @@
 package com.example.pollai.magazzino;
 
 import com.example.pollai.utente.Utente;
-import com.example.pollai.utente.UtenteDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

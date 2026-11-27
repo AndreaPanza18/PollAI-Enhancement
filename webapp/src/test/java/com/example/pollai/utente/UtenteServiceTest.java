@@ -1,7 +1,5 @@
 package com.example.pollai.utente;
 
-import com.example.pollai.utente.UtenteDAO;
-import com.example.pollai.utente.UtenteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

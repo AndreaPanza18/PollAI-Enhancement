@@ -1,8 +1,6 @@
 package com.example.pollai.produzione;
 
-import com.example.pollai.pollaio.GallinaDAO;
 import com.example.pollai.pollaio.Pollaio;
-import com.example.pollai.pollaio.PollaioDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
