@@ -1,5 +1,6 @@
 package com.example.pollai.magazzino;
 
+//@ nullable_by_default
 public class Notifica {
     private String avvertimento;
 
@@ -7,7 +8,7 @@ public class Notifica {
         this.avvertimento = avvertimento;
     }
 
-    public String getAvvertimento(){
+    public /*@ pure @*/ String getAvvertimento(){
         return avvertimento;
     }
 }

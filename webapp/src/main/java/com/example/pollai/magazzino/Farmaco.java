@@ -1,12 +1,12 @@
 package com.example.pollai.magazzino;
 
-import com.example.pollai.pollaio.Pollaio;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "farmaco")
+//@ nullable_by_default
 public class Farmaco implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Farmaco implements Serializable {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public /*@ pure @*/ Long getId() {
         return id;
     }
 
@@ -38,7 +38,7 @@ public class Farmaco implements Serializable {
         this.id = id;
     }
 
-    public String getTipo() {
+    public /*@ pure @*/ String getTipo() {
         return tipo;
     }
 
@@ -46,7 +46,7 @@ public class Farmaco implements Serializable {
         this.tipo = tipo;
     }
 
-    public int getQuantita() {
+    public /*@ pure @*/ int getQuantita() {
         return quantita;
     }
 
@@ -54,7 +54,7 @@ public class Farmaco implements Serializable {
         this.quantita = quantita;
     }
 
-    public Magazzino getMagazzino(){
+    public /*@ pure @*/ Magazzino getMagazzino(){
         return magazzino;
     }
 

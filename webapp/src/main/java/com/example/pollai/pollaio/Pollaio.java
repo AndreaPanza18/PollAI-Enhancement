@@ -11,13 +11,14 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "pollaio")
+//@ nullable_by_default
 public class Pollaio implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int quantity;
     @OneToMany(mappedBy = "pollaio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Gallina> galline;
+    private List</*@ non_null @*/ Gallina> galline = new ArrayList<>();
 
     @OneToOne(mappedBy = "pollaio", cascade = CascadeType.ALL)
     private Utente utente;
@@ -28,13 +29,14 @@ public class Pollaio implements Serializable {
     public Pollaio() {
     }
 
-    public Pollaio(int quantity, List<Gallina> galline, Utente utente) {
-        this.galline = galline != null ? galline : new ArrayList<>();
-        this.quantity = this.galline.size();
+    public Pollaio(int quantity, /*@ nullable @*/ List</*@ non_null @*/ Gallina> galline, Utente utente) {
+        List</*@ non_null @*/ Gallina> lista = galline != null ? galline : new ArrayList<>();
+        this.galline = lista;
+        this.quantity = lista.size();
         this.utente = utente;
     }
 
-    public Long getId() {
+    public /*@ pure @*/ Long getId() {
         return id;
     }
 
@@ -42,7 +44,7 @@ public class Pollaio implements Serializable {
         this.id = id;
     }
 
-    public int getQuantity() {
+    public /*@ pure @*/ int getQuantity() {
         return quantity;
     }
 
@@ -50,32 +52,33 @@ public class Pollaio implements Serializable {
         this.quantity = quantity;
     }
 
-    public List<Gallina> getGalline() {
+    public /*@ pure @*/ List</*@ non_null @*/ Gallina> getGalline() {
+        //@ assume galline != null;
         return galline;
     }
 
-    public Optional<Gallina> getGallinaByid(long id){
+    public /*@ pure @*/ Optional<Gallina> getGallinaByid(long id){
+        //@ assume galline != null;
         for (Gallina g : galline){
-            if (g.getId() == id){
-                Optional<Gallina> gallina = Optional.of(g);
-                return gallina;
+            Long gid = g.getId();
+            if (gid != null && gid.longValue() == id){
+                return Optional.of(g);
             }
         }
         return Optional.empty();
     }
 
-    public void setGalline(List<Gallina> galline) {
+    public void setGalline(/*@ non_null @*/ List</*@ non_null @*/ Gallina> galline) {
         this.galline = galline;
     }
 
-    public void addGallina(Gallina gallina) {
-        if (galline == null) {
-            galline = new ArrayList<>();
-        }
+    public void addGallina(/*@ nullable @*/ Gallina gallina) {
         if (gallina != null) {
-            galline.add(gallina);
+            List</*@ non_null @*/ Gallina> lista = galline;
+            //@ assume lista != null;
+            lista.add(gallina);
             gallina.setPollaio(this);
-            quantity = galline.size();
+            quantity = lista.size();
         } else {
             throw new IllegalArgumentException("La gallina non può essere null");
         }
@@ -83,18 +86,20 @@ public class Pollaio implements Serializable {
 
 
 
-    public void removeGallina(Gallina gallina) {
-        if (galline != null && galline.contains(gallina)) {
-            galline.remove(gallina);
+    public void removeGallina(/*@ nullable @*/ Gallina gallina) {
+        List</*@ non_null @*/ Gallina> lista = galline;
+        //@ assume lista != null;
+        if (gallina != null && lista.contains(gallina)) {
+            lista.remove(gallina);
             gallina.setPollaio(null);
-            quantity = galline.size();
+            quantity = lista.size();
         } else {
             System.out.println("Gallina non trovata nel pollaio");
         }
     }
 
 
-    public Utente getUtente() {
+    public /*@ pure @*/ Utente getUtente() {
         return utente;
     }
 
@@ -102,7 +107,7 @@ public class Pollaio implements Serializable {
         this.utente = utente;
     }
 
-    public DatiProduzione getProduzione() {
+    public /*@ pure @*/ DatiProduzione getProduzione() {
         return produzione;
     }
 

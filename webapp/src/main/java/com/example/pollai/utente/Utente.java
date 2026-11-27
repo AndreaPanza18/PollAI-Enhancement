@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "privato")
+//@ nullable_by_default
 public class Utente implements Serializable {
 
     @Id
@@ -27,7 +28,7 @@ public class Utente implements Serializable {
     private Boolean rasvsl;
 
     @Column(nullable = false, length = 64)
-    private String password;
+    private /*@ spec_public @*/ String password;
 
     @Column(unique = true, length = 45, name="p_iva")
     private String pIVA;
@@ -55,11 +56,11 @@ public class Utente implements Serializable {
         this.id = id;
     }
 
-    public Long getId() {
+    public /*@ pure @*/ Long getId() {
         return id;
     }
 
-    public String getNome() {
+    public /*@ pure @*/ String getNome() {
         return nome;
     }
 
@@ -67,7 +68,7 @@ public class Utente implements Serializable {
         this.nome = nome;
     }
 
-    public String getCognome() {
+    public /*@ pure @*/ String getCognome() {
         return cognome;
     }
 
@@ -75,7 +76,7 @@ public class Utente implements Serializable {
         this.cognome = cognome;
     }
 
-    public String getPhone_number() {
+    public /*@ pure @*/ String getPhone_number() {
         return phone_number;
     }
 
@@ -83,7 +84,7 @@ public class Utente implements Serializable {
         this.phone_number = phone_number;
     }
 
-    public Boolean getRasvsl() {
+    public /*@ pure @*/ Boolean getRasvsl() {
         return rasvsl;
     }
 
@@ -91,7 +92,7 @@ public class Utente implements Serializable {
         this.rasvsl = rasvsl;
     }
 
-    public String getPIVA() {
+    public /*@ pure @*/ String getPIVA() {
         return pIVA;
     }
 
@@ -99,7 +100,7 @@ public class Utente implements Serializable {
         this.pIVA = pIVA;
     }
 
-    public String getEmail() {
+    public /*@ pure @*/ String getEmail() {
         return email;
     }
 
@@ -107,27 +108,36 @@ public class Utente implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
+    /*@ public normal_behavior
+      @     assignable \nothing;
+      @     ensures \result == password;
+      @*/
+    public /*@ pure @*/ String getPassword() {
         return password;
     }
 
+    /*@ public normal_behavior
+      @     assignable this.password;
+      @     ensures this.password == password;
+      @*/
     public void setPassword(String password) {
         this.password = password;
     }
-    public Pollaio getPollaio(){
+    public /*@ pure @*/ Pollaio getPollaio(){
         return pollaio;
     }
     public void setPollaio(Pollaio pollaio){
         this.pollaio = pollaio;
     }
 
-    public Magazzino getMagazzino(){
+    public /*@ pure @*/ Magazzino getMagazzino(){
         return magazzino;
     }
     public void setMagazzino(Magazzino m){
         this.magazzino = m;
     }
 
+    //@ skipesc
     @Override
     public String toString() {
         return "User{" +

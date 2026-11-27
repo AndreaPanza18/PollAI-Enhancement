@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "gallina")
+//@ nullable_by_default
 public class Gallina implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,7 @@ public class Gallina implements Serializable {
     @Transient
     private String mangime;
 
-    public float getTemperatura() {
+    public /*@ pure @*/ float getTemperatura() {
         return temperatura;
     }
 
@@ -42,7 +43,7 @@ public class Gallina implements Serializable {
     }
 
 
-    public String getMangime() {
+    public /*@ pure @*/ String getMangime() {
         return mangime;
     }
 
@@ -62,7 +63,7 @@ public class Gallina implements Serializable {
     }
 
     // Getters and setters
-    public Long getId() {
+    public /*@ pure @*/ Long getId() {
         return id;
     }
 
@@ -70,7 +71,7 @@ public class Gallina implements Serializable {
         this.id = id;
     }
 
-    public String getRazza() {
+    public /*@ pure @*/ String getRazza() {
         return razza;
     }
 
@@ -78,7 +79,7 @@ public class Gallina implements Serializable {
         this.razza = razza;
     }
 
-    public int getEta() {
+    public /*@ pure @*/ int getEta() {
         return eta;
     }
 
@@ -86,7 +87,7 @@ public class Gallina implements Serializable {
         this.eta = eta;
     }
 
-    public int getPeso() {
+    public /*@ pure @*/ int getPeso() {
         return peso;
     }
 
@@ -94,7 +95,7 @@ public class Gallina implements Serializable {
         this.peso = peso;
     }
 
-    public Pollaio getPollaio() {
+    public /*@ pure @*/ Pollaio getPollaio() {
         return pollaio;
     }
 

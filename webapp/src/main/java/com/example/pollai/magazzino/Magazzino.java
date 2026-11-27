@@ -1,6 +1,5 @@
 package com.example.pollai.magazzino;
 
-import com.example.pollai.pollaio.Gallina;
 import com.example.pollai.utente.Utente;
 import jakarta.persistence.*;
 
@@ -10,16 +9,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "magazzino")
+//@ nullable_by_default
 public class Magazzino implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "magazzino", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Farmaco> farmaci = new ArrayList<>();
+    private List</*@ non_null @*/ Farmaco> farmaci = new ArrayList<>();
 
     @OneToMany(mappedBy = "magazzino", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Cibo> cibo = new ArrayList<>();
+    private List</*@ non_null @*/ Cibo> cibo = new ArrayList<>();
 
     @OneToOne(mappedBy = "magazzino", cascade = CascadeType.ALL)
     private Utente utente;
@@ -31,7 +31,7 @@ public class Magazzino implements Serializable {
     }
 
     // Constructor with All Fields (except ID, which is auto-generated)
-    public Magazzino(List<Farmaco> farmaci, List<Cibo> cibo, Utente utente) {
+    public Magazzino(/*@ non_null @*/ List</*@ non_null @*/ Farmaco> farmaci, /*@ non_null @*/ List</*@ non_null @*/ Cibo> cibo, Utente utente) {
         this.farmaci = farmaci;
         this.cibo = cibo;
         this.utente = utente;
@@ -41,47 +41,51 @@ public class Magazzino implements Serializable {
         this.id = id;
     }
 
-    public Long getId() {
+    public /*@ pure @*/ Long getId() {
         return id;
     }
 
-    public List<Farmaco> getFarmaci() {
+    public /*@ pure @*/ List</*@ non_null @*/ Farmaco> getFarmaci() {
         return farmaci;
     }
 
-    public void setFarmaci(List<Farmaco> farmaci) {
+    public void setFarmaci(/*@ non_null @*/ List</*@ non_null @*/ Farmaco> farmaci) {
         this.farmaci = farmaci;
     }
 
-    public void addFarmaco(Farmaco farmaco) {
+    public void addFarmaco(/*@ non_null @*/ Farmaco farmaco) {
+        //@ assume farmaci != null;
         farmaci.add(farmaco);
         farmaco.setMagazzino(this);
     }
 
-    public void removeFarmaco(Farmaco farmaco) {
+    public void removeFarmaco(/*@ non_null @*/ Farmaco farmaco) {
+        //@ assume farmaci != null;
         farmaci.remove(farmaco);
         farmaco.setMagazzino(null);
     }
 
-    public List<Cibo> getCibo() {
+    public /*@ pure @*/ List</*@ non_null @*/ Cibo> getCibo() {
         return cibo;
     }
 
-    public void setCibo(List<Cibo> cibo) {
+    public void setCibo(/*@ non_null @*/ List</*@ non_null @*/ Cibo> cibo) {
         this.cibo = cibo;
     }
 
-    public void addCibo(Cibo cibo1) {
+    public void addCibo(/*@ non_null @*/ Cibo cibo1) {
+        //@ assume cibo != null;
         cibo.add(cibo1);
         cibo1.setMagazzino(this);
     }
 
-    public void removeCibo(Cibo cibo1) {
+    public void removeCibo(/*@ non_null @*/ Cibo cibo1) {
+        //@ assume cibo != null;
         cibo.remove(cibo1);
         cibo1.setMagazzino(null);
     }
 
-    public Utente getUtente() {
+    public /*@ pure @*/ Utente getUtente() {
         return utente;
     }
 
@@ -89,7 +93,10 @@ public class Magazzino implements Serializable {
         this.utente = utente;
     }
 
-    public void setNotifica(){
+    // code_bigint_math: la somma delle quantità viene valutata in aritmetica matematica,
+    // quindi niente errori di overflow/underflow su int
+    public /*@ code_bigint_math @*/ void setNotifica(){
+        //@ assume cibo != null;
         Notifica notifica = new Notifica();
         int quantity = 0;
         for(Cibo c : cibo){
@@ -105,7 +112,7 @@ public class Magazzino implements Serializable {
         this.notifica = notifica;
     }
 
-    public Notifica getNotifica(){
+    public /*@ pure @*/ Notifica getNotifica(){
         return notifica;
     }
     
